@@ -1,6 +1,7 @@
-const RPC_URL = "https://ropsten.infura.io/v3/066eeeca9925471f9db758dc3af48442"; // access to Infura ethereum node
-const DEPOSIT_AMOUNTS = [100, 10, 1, 0.1, 0.01, 0.001]; // BTC deposit amount options which show up in th UI
-const PBTC_ADDRESSES = {
+const RPC_URL: string =
+  "https://ropsten.infura.io/v3/066eeeca9925471f9db758dc3af48442"; // access to Infura ethereum node
+const DEPOSIT_AMOUNTS: number[] = [100, 10, 1, 0.1, 0.01, 0.001]; // BTC deposit amount options which show up in th UI
+const PBTC_ADDRESSES: object = {
   instanceAddress: {
     0.001: "0x015FCC024FB65bB6Fc38aC390f23af6Eb18Fb740",
     0.01: "0x321096FBacae6eD16DB070CE35D131Eb648FC5df",
@@ -12,4 +13,4 @@ const PBTC_ADDRESSES = {
   tokenAddress: "0xEB770B1883Dcce11781649E8c4F1ac5F4B40C978",
 };
 
-export default { RPC_URL, DEPOSIT_AMOUNTS, PBTC_ADDRESSES };
+export { RPC_URL, DEPOSIT_AMOUNTS, PBTC_ADDRESSES };
