@@ -1,4 +1,22 @@
+button {
+  display: block;
+  margin: 1em auto;
+}
+
 .App {
   text-align: center;
 }
 
+.deposit-amounts-ul {
+  list-style: none;
+}
+
+.deposit-amounts-ul li {
+  display: inline-block;
+  margin: 0.5em 2em;
+}
+
+.deposit-amounts-ul li input {
+  display: inline-block !important;
+  width: 2em;
+}
