@@ -1,12 +1,19 @@
-import React from "react";
+import React, { Component } from "react";
 import "./styles/App.css";
 
-function App() {
-  return (
-    <div className="App">
-      <h1>TypeScript App</h1>
-    </div>
-  );
+class App extends Component {
+  constructor(props: any) {
+    super(props);
+
+    this.state = {};
+  }
+  render() {
+    return (
+      <div className="App">
+        <h1>Tornado Bitcoin</h1>
+      </div>
+    );
+  }
 }
 
 export default App;
