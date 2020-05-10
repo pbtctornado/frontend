@@ -9,11 +9,13 @@ const Web3 = require("web3");
 
 // initial state interface
 interface IState {
-  pbtcAmount: number; // the amount of BTC which the user wants to send to Tornado (options: [100, 10, 1, 0.1, 0.01, 0.001])
-  ethProvider: any;
-  pbtc: any;
+  btcAmount: number; // the amount of BTC which the user wants to send to Tornado
   btcDepositAddress: string;
+  note: string; // note which allows the user to withdraw pBTC from Tornado
+  ethProvider: any;
+  pbtc: any; // pbtc instance which allows us to generate BTC deposit address
   wallet: any; // stores information about mnemonic, address, private key
+  loading: boolean;
 }
 
 // pass props - {} and state - IState to Component class
@@ -22,16 +24,19 @@ class App extends Component<{}, IState> {
     super(props);
 
     this.state = {
-      pbtcAmount: 0.1, // default option
+      btcAmount: 0.1, // default option
+      btcDepositAddress: "",
+      note: "",
       ethProvider: null,
       pbtc: null,
-      btcDepositAddress: "",
       wallet: null,
+      loading: false,
     };
   }
 
   componentDidMount = async () => {
-    // I need to use web3 to get the provider, because pbtc instance accepts only Web3 provider as a Web3 object
+    // I have to use web3 to get the provider, because pbtc instance accepts only Web3 provider, not default ethers providers
+    // TODO is is somehow possible to pass ethers.providers.InfuraProvider() to pBTC without the need to use web3 provider?
     const web3 = new Web3(new Web3.providers.HttpProvider(RPC_URL));
 
     // convert web3 provider to ethers provider
@@ -40,45 +45,62 @@ class App extends Component<{}, IState> {
   };
 
   // set the amount of pbtc which the user wants to deposit
-  setPbtcAmount = (amount: number) => {
-    this.setState({ pbtcAmount: amount });
+  setBtcAmountHandler = (amount: number) => {
+    this.setState({ btcAmount: amount });
   };
 
   // this function is executed when the users confirms his deposit amount of BTC
-  showInfoHandler = async () => {
-    // generate user's ethereum wallet
-    const wallet = await this.getWallet();
+  showDepositInfoHandler = async () => {
+    this.setState({ loading: true });
 
-    // get all the necessary information to process this transaction
+    // generate user's ethereum wallet and note/commitment
+    const wallet = await this.getWallet();
+    const { note, commitment } = this.getNoteAndCommitment();
+
+    // generate BTC deposit address and signed trasnactions
     const btcDepositAddress: string = await this.getBtcAddress(wallet.address);
     const approveTx = await this.getApproveTransaction(wallet.privateKey);
-    const depositTx = await this.getDepositTransation(wallet.privateKey);
+    const depositTx = await this.getDepositTransation(
+      wallet.privateKey,
+      commitment
+    );
 
-    // TODO send signed transactions to our server. Call setState() only after the server confirms that it got all necessary information
-    // TODO server sends approveTx and depositTx to OpenGSN
+    // TODO send signed transactions to our server. Call setState() only after the server confirms that it received the information
+    // TODO send approveTx and depositTx to OpenGSN from our server
 
     this.setState({
       btcDepositAddress,
       wallet,
+      note,
+      loading: false,
     });
   };
 
-  getDepositTransation = async (privateKey: string) => {};
-  getApproveTransaction = async (privateKey: string) => {};
+  getDepositTransation = async (privateKey: string, commitment: string) => {
+    // Creates a transaction which sends pBTC from user's address to tornado contract
+    // Tornado contract is selected based on the amount of BTC which the user wants to deposit (this.state.btcAmount)
+    // TODO create and return deposit transaction signed by @privateKey:string
+    return null;
+  };
 
-  getNoteAndCommitment = async () => {
-    // get snarks commitment and note
+  getApproveTransaction = async (privateKey: string) => {
+    // Creates a transaction which allows tornado contract spend user's pBTC
+    // Tornado contract is selected based on the amount of BTC which the user wants to deposit (this.state.btcAmount)
+    // TODO create and return approve transaction signed by @privateKey:string
+    return null;
+  };
+
+  getNoteAndCommitment = () => {
+    // get snarks note and commitment
     const deposit = createDeposit(rbigint(31), rbigint(31));
-    const amount: number = this.state.pbtcAmount * 10 ** 3;
+    const amount: number = this.state.btcAmount * 10 ** 3;
     const chainId: number = this.state.ethProvider.network.chainId;
-
-    const commitment = toHex(deposit.commitment);
-    const note = `tornado-eth-${amount}-${chainId}-${toHex(
+    const note: string = `tornado-eth-${amount}-${chainId}-${toHex(
       deposit.preimage,
       62
     )}`;
-
-    return { commitment, note };
+    const commitment: string = toHex(deposit.commitment);
+    return { note, commitment };
   };
 
   // get BTC deposit address based on the amount of BTC which user selected
@@ -109,12 +131,13 @@ class App extends Component<{}, IState> {
         {DEPOSIT_AMOUNTS.map((amount, index) => (
           <li key={index}>
             <input
-              checked={this.state.pbtcAmount === amount}
+              checked={this.state.btcAmount === amount}
               type="radio"
               name="btcAmounts"
               id={index.toString()}
               value={amount}
-              onChange={() => this.setPbtcAmount(amount)}
+              onChange={() => this.setBtcAmountHandler(amount)}
+              disabled={this.state.loading} // don't allow the user to change pBTC amount while the BTC address is being generated
             />
             <label htmlFor={index.toString()}>{amount} BTC</label>
           </li>
@@ -122,8 +145,14 @@ class App extends Component<{}, IState> {
       </ul>
     );
 
+    // show deposit information is available
     let depositInfo = <></>;
-    if (this.state.btcDepositAddress !== "" && this.state.wallet !== null) {
+    if (
+      this.state.btcDepositAddress !== "" &&
+      this.state.wallet !== null &&
+      this.state.note !== "" &&
+      !this.state.loading
+    ) {
       let { address, mnemonic } = this.state.wallet;
 
       depositInfo = (
@@ -131,6 +160,8 @@ class App extends Component<{}, IState> {
           Send Bitcoin to this address: <br />
           {this.state.btcDepositAddress}
           <br /> <br />
+          Your note: <br />
+          {this.state.note} <br /> <br />
           pBTC will be sent to this Address: <br />
           {address} <br /> <br />
           Mnemonic phrase to access the address: <br />
@@ -143,8 +174,11 @@ class App extends Component<{}, IState> {
         <h1>Tornado Bitcoin</h1>
         Select the amount of BTC do deposit:
         {amountOptions}
-        <button onClick={this.showInfoHandler}>Show BTC deposit address</button>
+        <button onClick={this.showDepositInfoHandler}>
+          Show BTC deposit address
+        </button>
         {depositInfo}
+        {this.state.loading ? <div>Loading...</div> : <></>}
       </div>
     );
   }
