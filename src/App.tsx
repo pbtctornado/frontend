@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { DEPOSIT_AMOUNTS, RPC_URL } from "./config";
-import "./styles/App.css";
 import { pBTC } from "ptokens-pbtc";
 import { rbigint, toHex, createDeposit } from "./utils/snarks-functions";
+import { DEPOSIT_AMOUNTS, RPC_URL } from "./config";
+import "./styles/App.css";
+
 const ethers = require("ethers");
 const Web3 = require("web3");
 
@@ -12,8 +13,7 @@ interface IState {
   ethProvider: any;
   pbtc: any;
   btcDepositAddress: string;
-  pbtcRecipientAddress: string;
-  mnemonic: string;
+  wallet: any; // stores information about mnemonic, address, private key
 }
 
 // pass props - {} and state - IState to Component class
@@ -26,8 +26,7 @@ class App extends Component<{}, IState> {
       ethProvider: null,
       pbtc: null,
       btcDepositAddress: "",
-      pbtcRecipientAddress: "",
-      mnemonic: "",
+      wallet: null,
     };
   }
 
@@ -37,7 +36,6 @@ class App extends Component<{}, IState> {
 
     // convert web3 provider to ethers provider
     const ethProvider = new ethers.providers.Web3Provider(web3.currentProvider);
-
     this.setState({ ethProvider });
   };
 
@@ -48,25 +46,28 @@ class App extends Component<{}, IState> {
 
   // this function is executed when the users confirms his deposit amount of BTC
   showInfoHandler = async () => {
+    // generate user's ethereum wallet
     const wallet = await this.getWallet();
-    const { privateKey, address, mnemonic } = wallet.signingKey;
-    const btcDepositAddress: string = await this.getBtcAddress(address);
-    const depositTx = await this.getDepositTransation(privateKey);
-    const approveTx = await this.getApproveTransaction(privateKey);
 
-    // TODO send depositTx and approveTx to OpenGSN
+    // get all the necessary information to process this transaction
+    const btcDepositAddress: string = await this.getBtcAddress(wallet.address);
+    const approveTx = await this.getApproveTransaction(wallet.privateKey);
+    const depositTx = await this.getDepositTransation(wallet.privateKey);
+
+    // TODO send signed transactions to our server. Call setState() only after the server confirms that it got all necessary information
+    // TODO server sends approveTx and depositTx to OpenGSN
 
     this.setState({
       btcDepositAddress,
-      mnemonic,
-      pbtcRecipientAddress: address,
+      wallet,
     });
   };
 
   getDepositTransation = async (privateKey: string) => {};
   getApproveTransaction = async (privateKey: string) => {};
+
   getNoteAndCommitment = async () => {
-    // get snarks ommitment and private key
+    // get snarks commitment and note
     const deposit = createDeposit(rbigint(31), rbigint(31));
     const amount: number = this.state.pbtcAmount * 10 ** 3;
     const chainId: number = this.state.ethProvider.network.chainId;
@@ -80,10 +81,8 @@ class App extends Component<{}, IState> {
     return { commitment, note };
   };
 
-  // get BTC deposut address based on the amount of BTC which user selected
+  // get BTC deposit address based on the amount of BTC which user selected
   getBtcAddress = async (ethAddress: string) => {
-    console.log("Generating BTC deposit address...");
-
     // create pbtc instance
     const pbtc = new pBTC({
       ethProvider: this.state.ethProvider._web3Provider,
@@ -94,13 +93,14 @@ class App extends Component<{}, IState> {
     return btcDepositAddress.toString();
   };
 
+  // returns ethers Wallet object which contains address, private key and mnemonic
   getWallet = async () => {
     // generate 12 words mnemonic
-    const mnemonic12 = await ethers.utils.HDNode.entropyToMnemonic(
+    const mnemonic = await ethers.utils.HDNode.entropyToMnemonic(
       ethers.utils.randomBytes(16)
     );
-
-    return ethers.Wallet.fromMnemonic(mnemonic12);
+    // return wallet object generated from mnemonic
+    return ethers.Wallet.fromMnemonic(mnemonic);
   };
 
   render() {
@@ -123,16 +123,18 @@ class App extends Component<{}, IState> {
     );
 
     let depositInfo = <></>;
-    if (this.state.btcDepositAddress !== "") {
+    if (this.state.btcDepositAddress !== "" && this.state.wallet !== null) {
+      let { address, mnemonic } = this.state.wallet;
+
       depositInfo = (
         <div className="deposit-info-div">
           Send Bitcoin to this address: <br />
           {this.state.btcDepositAddress}
           <br /> <br />
           pBTC will be sent to this Address: <br />
-          {this.state.pbtcRecipientAddress} <br /> <br />
+          {address} <br /> <br />
           Mnemonic phrase to access the address: <br />
-          {this.state.mnemonic} <br /> <br />
+          {mnemonic} <br /> <br />
         </div>
       );
     }
