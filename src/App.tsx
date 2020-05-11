@@ -57,15 +57,15 @@ class App extends Component<{}, State> {
     this.setState({ btcAmount: amount });
   };
 
-  // this function is executed when the users confirms his deposit amount of BTC
+  // this function is executed when the user confirms his deposit amount of BTC
   showDepositInfoHandler = async () => {
     this.setState({ loading: true });
 
-    // generate user's ethereum wallet and note/commitment
+    // generate user's ethereum wallet, note and commitment
     const wallet = await this.getWallet();
     const { note, commitment } = this.getNoteAndCommitment();
 
-    // generate BTC deposit address and signed trasnactions
+    // generate BTC deposit address and signed transactions
     const btcDepositAddress: string = await this.getBtcAddress(wallet.address);
     const approveTx = await this.getApproveTransaction(wallet.privateKey);
     const depositTx = await this.getDepositTransation(
@@ -89,14 +89,14 @@ class App extends Component<{}, State> {
   getDepositTransation = async (privateKey: string, commitment: string) => {
     // Creates a transaction which sends pBTC from user's address to tornado contract
     // Tornado contract is selected based on the amount of BTC which the user wants to deposit (this.state.btcAmount)
-    // TODO create and return deposit transaction signed by @privateKey:string
+    // TODO create and return deposit transaction signed by privateKey
     return null;
   };
 
   getApproveTransaction = async (privateKey: string) => {
     // Creates a transaction which allows tornado contract spend user's pBTC
     // Tornado contract is selected based on the amount of BTC which the user wants to deposit (this.state.btcAmount)
-    // TODO create and return approve transaction signed by @privateKey:string
+    // TODO create and return approve transaction signed by privateKey
     return null;
   };
 
@@ -115,7 +115,7 @@ class App extends Component<{}, State> {
 
   getBtcAddress = async (ethAddress: string) => {
     // get BTC deposit address based on the amount of BTC which user selected
-    // create pbtc instance
+    // create pbtc instance and pass it web3 provider
     const pbtc = new pBTC({
       ethProvider: this.state.ethProvider._web3Provider,
       btcNetwork: "testnet", //'testnet' or 'bitcoin', default 'testnet'
