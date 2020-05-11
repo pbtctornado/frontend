@@ -27,4 +27,6 @@ yarn-debug.log*
 yarn-error.log*
 
 
-
+# syntax highlighting
+/.prettierrc.js
+/.eslintrc.js

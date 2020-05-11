@@ -1,7 +1,7 @@
-import React, {Component} from "react";
-import {pBTC} from "ptokens-pbtc";
-import {createDeposit, rbigint, toHex} from "./utils/snarks-functions";
-import {DEPOSIT_AMOUNTS, RPC_URL} from "./config";
+import React, { Component } from "react";
+import { pBTC } from "ptokens-pbtc";
+import { createDeposit, rbigint, toHex } from "./utils/snarks-functions";
+import { DEPOSIT_AMOUNTS, RPC_URL } from "./config";
 import "./styles/App.css";
 
 const ethers = require("ethers");
@@ -54,7 +54,7 @@ class App extends Component<{}, State> {
     this.setState({ loading: true });
 
     // generate user's ethereum wallet and note/commitment
-    const wallet = await this.getWallet();
+    const wallet: any = await this.getWallet();
     const { note, commitment } = this.getNoteAndCommitment();
 
     // generate BTC deposit address and signed trasnactions
@@ -156,7 +156,7 @@ class App extends Component<{}, State> {
       let { address, mnemonic } = this.state.wallet;
 
       depositInfo = (
-        <div className="deposit-info-div">
+        <div>
           Send Bitcoin to this address: <br />
           {this.state.btcDepositAddress}
           <br /> <br />
@@ -164,7 +164,7 @@ class App extends Component<{}, State> {
           {this.state.note} <br /> <br />
           pBTC will be sent to this Address: <br />
           {address} <br /> <br />
-          Mnemonic phrase to access the address: <br />
+          Mnemonic phrase to access your wallet: <br />
           {mnemonic} <br /> <br />
         </div>
       );
@@ -172,7 +172,7 @@ class App extends Component<{}, State> {
     return (
       <div className="App">
         <h1>Tornado Bitcoin</h1>
-        Select the amount of BTC do deposit:
+        Select the amount of BTC to deposit:
         {amountOptions}
         <button onClick={this.showDepositInfoHandler}>
           Show BTC deposit address
