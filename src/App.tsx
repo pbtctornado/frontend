@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import { pBTC } from "ptokens-pbtc";
-import { rbigint, toHex, createDeposit } from "./utils/snarks-functions";
-import { DEPOSIT_AMOUNTS, RPC_URL } from "./config";
+import React, {Component} from "react";
+import {pBTC} from "ptokens-pbtc";
+import {createDeposit, rbigint, toHex} from "./utils/snarks-functions";
+import {DEPOSIT_AMOUNTS, RPC_URL} from "./config";
 import "./styles/App.css";
 
 const ethers = require("ethers");
 const Web3 = require("web3");
 
-// initial state interface
-interface IState {
+// State interface
+interface State {
   btcAmount: number; // the amount of BTC which the user wants to send to Tornado
   btcDepositAddress: string;
   note: string; // note which allows the user to withdraw pBTC from Tornado
@@ -18,8 +18,8 @@ interface IState {
   loading: boolean;
 }
 
-// pass props - {} and state - IState to Component class
-class App extends Component<{}, IState> {
+// pass props and State interface to Component class
+class App extends Component<{}, State> {
   constructor(props: any) {
     super(props);
 
@@ -92,7 +92,7 @@ class App extends Component<{}, IState> {
 
   getNoteAndCommitment = () => {
     // get snarks note and commitment
-    const deposit = createDeposit(rbigint(31), rbigint(31));
+    const deposit: any = createDeposit(rbigint(31), rbigint(31));
     const amount: number = this.state.btcAmount * 10 ** 3;
     const chainId: number = this.state.ethProvider.network.chainId;
     const note: string = `tornado-eth-${amount}-${chainId}-${toHex(
