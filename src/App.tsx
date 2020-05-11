@@ -18,6 +18,13 @@ interface State {
   loading: boolean;
 }
 
+// Wallet interface
+interface Wallet {
+  mnemonic: string;
+  privateKey: string;
+  address: string;
+}
+
 // pass props and State interface to Component class
 class App extends Component<{}, State> {
   constructor(props: any) {
@@ -35,13 +42,14 @@ class App extends Component<{}, State> {
   }
 
   componentDidMount = async () => {
-    // I have to use web3 to get the provider, because pbtc instance accepts only Web3 provider, not default ethers providers
-    // TODO is is somehow possible to pass ethers.providers.InfuraProvider() to pBTC without the need to use web3 provider?
+    // I have to use Web3 provider, because pbtc instance accepts only Web3 provider, not default ethers providers
     const web3 = new Web3(new Web3.providers.HttpProvider(RPC_URL));
 
     // convert web3 provider to ethers provider
     const ethProvider = new ethers.providers.Web3Provider(web3.currentProvider);
     this.setState({ ethProvider });
+
+    // TODO is it somehow possible to convert ethers.getDefaultProvider() to pbtc instance without the need to use web3 provider?
   };
 
   // set the amount of pbtc which the user wants to deposit
@@ -54,7 +62,7 @@ class App extends Component<{}, State> {
     this.setState({ loading: true });
 
     // generate user's ethereum wallet and note/commitment
-    const wallet: any = await this.getWallet();
+    const wallet = await this.getWallet();
     const { note, commitment } = this.getNoteAndCommitment();
 
     // generate BTC deposit address and signed trasnactions
@@ -67,7 +75,9 @@ class App extends Component<{}, State> {
 
     // TODO send signed transactions to our server. Call setState() only after the server confirms that it received the information
     // TODO send approveTx and depositTx to OpenGSN from our server
+    // TODO create EventListner on the server which waits until wallet.address receives pBTC
 
+    // set the new state after all of the code above processed without an error
     this.setState({
       btcDepositAddress,
       wallet,
@@ -92,7 +102,7 @@ class App extends Component<{}, State> {
 
   getNoteAndCommitment = () => {
     // get snarks note and commitment
-    const deposit: any = createDeposit(rbigint(31), rbigint(31));
+    const deposit = createDeposit(rbigint(31), rbigint(31));
     const amount: number = this.state.btcAmount * 10 ** 3;
     const chainId: number = this.state.ethProvider.network.chainId;
     const note: string = `tornado-eth-${amount}-${chainId}-${toHex(
@@ -103,14 +113,14 @@ class App extends Component<{}, State> {
     return { note, commitment };
   };
 
-  // get BTC deposit address based on the amount of BTC which user selected
   getBtcAddress = async (ethAddress: string) => {
+    // get BTC deposit address based on the amount of BTC which user selected
     // create pbtc instance
     const pbtc = new pBTC({
       ethProvider: this.state.ethProvider._web3Provider,
       btcNetwork: "testnet", //'testnet' or 'bitcoin', default 'testnet'
     });
-
+    // get btc deposit address and return it as string
     const btcDepositAddress = await pbtc.getDepositAddress(ethAddress);
     return btcDepositAddress.toString();
   };
@@ -121,8 +131,17 @@ class App extends Component<{}, State> {
     const mnemonic = await ethers.utils.HDNode.entropyToMnemonic(
       ethers.utils.randomBytes(16)
     );
-    // return wallet object generated from mnemonic
-    return ethers.Wallet.fromMnemonic(mnemonic);
+    // get privateKey and address derived from the mnemonic
+    const { address, privateKey } = ethers.Wallet.fromMnemonic(mnemonic);
+
+    // create and return custom wallet object according to the Wallet Interface
+    const wallet: Wallet = {
+      address: address,
+      privateKey: privateKey,
+      mnemonic: mnemonic,
+    };
+
+    return wallet;
   };
 
   render() {
