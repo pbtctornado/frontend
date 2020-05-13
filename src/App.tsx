@@ -62,7 +62,7 @@ class App extends Component<{}, State> {
         this.setState({ loading: true });
 
         // generate user's ethereum wallet, note and commitment
-        const wallet = await this.getWallet();
+        const wallet = ethers.Wallet.createRandom();
         const { note, commitment } = this.getNoteAndCommitment();
 
         // generate BTC deposit address and signed transactions
@@ -117,23 +117,6 @@ class App extends Component<{}, State> {
         // get btc deposit address and return it as string
         const btcDepositAddress = await pbtc.getDepositAddress(ethAddress);
         return btcDepositAddress.toString();
-    };
-
-    // returns ethers Wallet object which contains address, private key and mnemonic
-    getWallet = async () => {
-        // generate 12 words mnemonic
-        const mnemonic = await ethers.utils.HDNode.entropyToMnemonic(ethers.utils.randomBytes(16));
-        // get privateKey and address derived from the mnemonic
-        const { address, privateKey } = ethers.Wallet.fromMnemonic(mnemonic);
-
-        // create and return custom wallet object according to the Wallet Interface
-        const wallet: Wallet = {
-            address: address,
-            privateKey: privateKey,
-            mnemonic: mnemonic,
-        };
-
-        return wallet;
     };
 
     render() {
