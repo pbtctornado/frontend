@@ -18,13 +18,6 @@ interface State {
     loading: boolean;
 }
 
-// Wallet interface
-interface Wallet {
-    mnemonic: string;
-    privateKey: string;
-    address: string;
-}
-
 // pass props and State interface to Component class
 class App extends Component<{}, State> {
     constructor(props: any) {
