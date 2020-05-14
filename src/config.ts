@@ -7,12 +7,12 @@ const RPC_URL: string = 'https://' + NETWORK + '.infura.io/v3/066eeeca9925471f9d
 const TORNADO_PBTC_INSTANCES_ADDRESSES = {
     // pBTC instance addresses on Ropsten testnet
     ropsten: {
-        0.001: '0x8627d3F01Ccf0c3a7e6B8b7b94131883D0BB58FA',
-        0.01: '0xb0693011Ba657438B772436605e2282e34950791',
-        0.1: '0xcEA2004398c42096093cB6F374E21a3E04e2143c',
-        1: '0x76cA985007B00CF9454c1C097B26895D1f06AB7f',
-        10: '0x242C27B896b53ae011f847dbCD99F525d2801f89',
-        100: '0x7eBF6A1e387218bca031f49eB26b4d443F2b96E3',
+        0.001: '0xb5c512E013c1f17a5ed157c557c6891558f1a719',
+        0.01: '0x0bD3D556707bEFe41C6215Dc8bf06D81616D6112',
+        0.1: '0x731a0e7c35dC9b7002be432770F78aF99f2FAf02',
+        1: undefined,
+        10: undefined,
+        100: undefined,
     },
 };
 
