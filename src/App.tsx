@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { pBTC } from 'ptokens-pbtc';
-import { createDeposit, rbigint, toHex } from './utils/snarks-functions';
+import { getNoteStringAndCommitment } from './utils/snarks-functions';
 import { DEPOSIT_AMOUNTS, RPC_URL } from './config';
 import './styles/App.css';
 
@@ -11,7 +11,7 @@ const Web3 = require('web3');
 interface State {
     btcAmount: number; // the amount of BTC which the user wants to send to Tornado
     btcDepositAddress: string;
-    note: string; // note which allows the user to withdraw pBTC from Tornado
+    noteString: string; // a string which allows the user to withdraw pBTC from Tornado
     ethProvider: any;
     pbtc: any; // pbtc instance which allows us to generate BTC deposit address
     wallet: any; // stores information about mnemonic, address, private key
@@ -26,7 +26,7 @@ class App extends Component<{}, State> {
         this.state = {
             btcAmount: 0.1, // default option
             btcDepositAddress: '',
-            note: '',
+            noteString: '',
             ethProvider: null,
             pbtc: null,
             wallet: null,
@@ -54,9 +54,12 @@ class App extends Component<{}, State> {
     showDepositInfoHandler = async () => {
         this.setState({ loading: true });
 
-        // generate user's ethereum wallet, note and commitment
+        // generate user's ethereum wallet, noteString and commitment
         const wallet = ethers.Wallet.createRandom();
-        const { note, commitment } = this.getNoteAndCommitment();
+        const { noteString, commitment } = getNoteStringAndCommitment(
+            this.state.btcAmount,
+            this.state.ethProvider.network.chainId,
+        );
 
         // generate BTC deposit address and signed transactions
         const btcDepositAddress: string = await this.getBtcAddress(wallet.address);
@@ -71,7 +74,7 @@ class App extends Component<{}, State> {
         this.setState({
             btcDepositAddress,
             wallet,
-            note,
+            noteString,
             loading: false,
         });
     };
@@ -88,16 +91,6 @@ class App extends Component<{}, State> {
         // Tornado contract is selected based on the amount of BTC which the user wants to deposit (this.state.btcAmount)
         // TODO create and return approve transaction signed by privateKey
         return null;
-    };
-
-    getNoteAndCommitment = () => {
-        // get snarks note and commitment
-        const deposit = createDeposit(rbigint(31), rbigint(31));
-        const amount: number = this.state.btcAmount * 10 ** 3;
-        const chainId: number = this.state.ethProvider.network.chainId;
-        const note: string = `tornado-eth-${amount}-${chainId}-${toHex(deposit.preimage, 62)}`;
-        const commitment: string = toHex(deposit.commitment);
-        return { note, commitment };
     };
 
     getBtcAddress = async (ethAddress: string) => {
@@ -137,7 +130,7 @@ class App extends Component<{}, State> {
         if (
             this.state.btcDepositAddress !== '' &&
             this.state.wallet !== null &&
-            this.state.note !== '' &&
+            this.state.noteString !== '' &&
             !this.state.loading
         ) {
             let { address, mnemonic } = this.state.wallet;
@@ -148,7 +141,7 @@ class App extends Component<{}, State> {
                     {this.state.btcDepositAddress}
                     <br /> <br />
                     Your note: <br />
-                    {this.state.note} <br /> <br />
+                    {this.state.noteString} <br /> <br />
                     pBTC will be sent to this Address: <br />
                     {address} <br /> <br />
                     Mnemonic phrase to access your wallet: <br />
