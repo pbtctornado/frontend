@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { pBTC } from 'ptokens-pbtc';
 import { getNoteStringAndCommitment } from './utils/snarks-functions';
+import { sendTransactionsToServer } from './utils/server-functions';
 import { DEPOSIT_AMOUNTS, NETWORK, PTOKEN_ADDRESS, RPC_URL, TORNADO_PBTC_INSTANCES_ADDRESSES, } from './config'
 import { pTokenAbi } from './contracts/pTokenAbi';
 import './styles/App.css';
@@ -42,38 +43,9 @@ class App extends Component<{}, State> {
         this.setState({ web3 });
     };
 
-    // set the amount of pbtc which the user wants to deposit
+    // set the amount of BTC which the user wants to deposit
     setBtcAmountHandler = (amount: number) => {
         this.setState({ btcAmount: amount });
-    };
-
-    // this function is executed when the user confirms his deposit amount of BTC
-    showDepositInfoHandler = async () => {
-        this.setState({ loading: true });
-
-        // generate user's ethereum wallet, noteString and commitment
-        const wallet = ethers.Wallet.createRandom();
-        const { noteString, commitment } = getNoteStringAndCommitment(
-            this.state.btcAmount,
-            await this.state.web3.eth.net.getId()
-        );
-
-        // generate BTC deposit address and signed transactions
-        const btcDepositAddress: string = await this.getBtcAddress(wallet.address);
-        const approveTx = await this.getApproveTransaction(wallet.privateKey);
-        console.log(approveTx);
-
-        // TODO send signed transactions to our server. Call setState() only after the server confirms that it received the information
-        // TODO send approveTx and depositTx to OpenGSN from our server
-        // TODO create EventListner on the server which waits until wallet.address receives pBTC
-
-        // set the new state after all of the code above processed without an error
-        this.setState({
-            btcDepositAddress,
-            wallet,
-            noteString,
-            loading: false,
-        });
     };
 
     getDepositTransation = async (privateKey: string, commitment: string) => {
@@ -119,6 +91,49 @@ class App extends Component<{}, State> {
         // get btc deposit address and return it as string
         const btcDepositAddress = await pbtc.getDepositAddress(ethAddress);
         return btcDepositAddress.toString();
+    };
+
+    // this function is executed when the user confirms his deposit amount of BTC
+    showDepositInfoHandler = async () => {
+        // TODO better error handling
+        try {
+            this.setState({ loading: true });
+
+            // generate user's ethereum wallet, noteString and commitment
+            const wallet = ethers.Wallet.createRandom();
+            const { noteString, commitment } = getNoteStringAndCommitment(
+                this.state.btcAmount,
+                await this.state.web3.eth.net.getId()
+            );
+
+            // generate BTC deposit address and signed transactions
+            const btcDepositAddress: string = await this.getBtcAddress(wallet.address);
+            const approveTx = await this.getApproveTransaction(wallet.privateKey);
+            const depositTx = await this.getDepositTransation(wallet.privateKey, commitment);
+            // TODO create deposit transaction and send it to the server
+
+            // send transaction data to the server
+            const response = await sendTransactionsToServer(wallet.address, approveTx.rawTransaction, 'depositTx');
+
+            // if the data was sent without an error, show deposit info to the user
+            if (response !== 'error') {
+                this.setState({
+                    btcDepositAddress,
+                    wallet,
+                    noteString,
+                    loading: false,
+                }, () => {
+                    console.log('Success!')
+                });
+            } else {
+                this.setState({ loading: false });
+            }
+
+        } catch (error) {
+            console.log('Error occured when generating deposit information.');
+            console.error(error);
+            this.setState({ loading: false });
+        }
     };
 
     render() {
