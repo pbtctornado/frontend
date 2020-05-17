@@ -4,7 +4,7 @@ const NETWORK = 'ropsten';
 // access to Infura ethereum node
 const RPC_URL: string = 'https://' + NETWORK + '.infura.io/v3/066eeeca9925471f9db758dc3af48442';
 
-const TORNADO_PBTC_INSTANCES_ADDRESSES = {
+const TORNADO_PBTC_INSTANCES_ADDRESSES: any = {
     // pBTC instance addresses on Ropsten testnet
     ropsten: {
         0.001: '0xb5c512E013c1f17a5ed157c557c6891558f1a719',
@@ -16,12 +16,12 @@ const TORNADO_PBTC_INSTANCES_ADDRESSES = {
     },
 };
 
-// BTC deposit amount options which show up in th UI
-const DEPOSIT_AMOUNTS: number[] = Object.keys(TORNADO_PBTC_INSTANCES_ADDRESSES[NETWORK]).map(Number);
+// BTC deposit amount options which show up in th UI (sort the amounts from the lowest to the highest)
+const DEPOSIT_AMOUNTS: number[] = Object.keys(TORNADO_PBTC_INSTANCES_ADDRESSES[NETWORK]).sort().map(Number);
 
 const PTOKEN_ADDRESS = {
     ropsten: '0xEB770B1883Dcce11781649E8c4F1ac5F4B40C978',
     mainnet: '0x5228a22e72ccC52d415EcFd199F99D0665E7733b',
 };
 
-export { RPC_URL, DEPOSIT_AMOUNTS, TORNADO_PBTC_INSTANCES_ADDRESSES, PTOKEN_ADDRESS };
+export { RPC_URL, DEPOSIT_AMOUNTS, TORNADO_PBTC_INSTANCES_ADDRESSES, PTOKEN_ADDRESS, NETWORK };

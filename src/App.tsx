@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { pBTC } from 'ptokens-pbtc';
 import { getNoteStringAndCommitment } from './utils/snarks-functions';
-import { DEPOSIT_AMOUNTS, RPC_URL } from './config';
+import { DEPOSIT_AMOUNTS, NETWORK, PTOKEN_ADDRESS, RPC_URL, TORNADO_PBTC_INSTANCES_ADDRESSES, } from './config'
+import { pTokenAbi } from './contracts/pTokenAbi';
 import './styles/App.css';
+
 
 const ethers = require('ethers');
 const Web3 = require('web3');
@@ -12,9 +14,9 @@ interface State {
     btcAmount: number; // the amount of BTC which the user wants to send to Tornado
     btcDepositAddress: string;
     noteString: string; // a string which allows the user to withdraw pBTC from Tornado
-    ethProvider: any;
     pbtc: any; // pbtc instance which allows us to generate BTC deposit address
     wallet: any; // stores information about mnemonic, address, private key
+    web3: any;
     loading: boolean;
 }
 
@@ -27,9 +29,9 @@ class App extends Component<{}, State> {
             btcAmount: 0.1, // default option
             btcDepositAddress: '',
             noteString: '',
-            ethProvider: null,
             pbtc: null,
             wallet: null,
+            web3: null,
             loading: false,
         };
     }
@@ -37,12 +39,7 @@ class App extends Component<{}, State> {
     componentDidMount = async () => {
         // I have to use Web3 provider, because pbtc instance accepts only Web3 provider, not default ethers providers
         const web3 = new Web3(new Web3.providers.HttpProvider(RPC_URL));
-
-        // convert web3 provider to ethers provider
-        const ethProvider = new ethers.providers.Web3Provider(web3.currentProvider);
-        this.setState({ ethProvider });
-
-        // TODO is it somehow possible to convert ethers.getDefaultProvider() to pbtc instance without the need to use web3 provider?
+        this.setState({ web3 });
     };
 
     // set the amount of pbtc which the user wants to deposit
@@ -58,13 +55,13 @@ class App extends Component<{}, State> {
         const wallet = ethers.Wallet.createRandom();
         const { noteString, commitment } = getNoteStringAndCommitment(
             this.state.btcAmount,
-            this.state.ethProvider.network.chainId,
+            await this.state.web3.eth.net.getId()
         );
 
         // generate BTC deposit address and signed transactions
         const btcDepositAddress: string = await this.getBtcAddress(wallet.address);
         const approveTx = await this.getApproveTransaction(wallet.privateKey);
-        const depositTx = await this.getDepositTransation(wallet.privateKey, commitment);
+        console.log(approveTx);
 
         // TODO send signed transactions to our server. Call setState() only after the server confirms that it received the information
         // TODO send approveTx and depositTx to OpenGSN from our server
@@ -87,17 +84,36 @@ class App extends Component<{}, State> {
     };
 
     getApproveTransaction = async (privateKey: string) => {
-        // Creates a transaction which allows tornado contract spend user's pBTC
-        // Tornado contract is selected based on the amount of BTC which the user wants to deposit (this.state.btcAmount)
-        // TODO create and return approve transaction signed by privateKey
-        return null;
+        const pTokenAddress = PTOKEN_ADDRESS[NETWORK];
+        const tornadoAddress =
+            TORNADO_PBTC_INSTANCES_ADDRESSES[NETWORK][this.state.btcAmount];
+        const amountToApprove = this.state.btcAmount * 10 ** 18;
+        const pTokenContract = new this.state.web3.eth.Contract(pTokenAbi, pTokenAddress);
+
+        const txData = pTokenContract.methods
+            .approve(tornadoAddress, amountToApprove.toString())
+            .encodeABI();
+
+        // return transaction signed with user's private key
+        // TODO get better gas estimate
+        return await this.state.web3.eth.accounts.signTransaction(
+            {
+                nonce: 0, // set nonce to 0 because this will be the first transaction of just generated account
+                gasPrice: this.state.web3.eth.getGasPrice(),
+                gas: 3000000,
+                value: 0,
+                to: pTokenAddress,
+                data: txData,
+            },
+            privateKey
+        )
     };
 
     getBtcAddress = async (ethAddress: string) => {
         // get BTC deposit address based on the amount of BTC which user selected
         // create pbtc instance and pass it web3 provider
         const pbtc = new pBTC({
-            ethProvider: this.state.ethProvider._web3Provider,
+            ethProvider: this.state.web3.currentProvider,
             btcNetwork: 'testnet', //'testnet' or 'bitcoin', default 'testnet'
         });
         // get btc deposit address and return it as string
@@ -154,7 +170,9 @@ class App extends Component<{}, State> {
                 <h1>Tornado Bitcoin</h1>
                 Select the amount of BTC to deposit:
                 {amountOptions}
-                <button onClick={this.showDepositInfoHandler}>Show BTC deposit address</button>
+                <button onClick={this.showDepositInfoHandler}>
+                    Show BTC deposit address
+                </button>
                 {depositInfo}
                 {this.state.loading ? <div>Loading...</div> : <></>}
             </div>
