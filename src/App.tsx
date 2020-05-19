@@ -112,6 +112,7 @@ class App extends Component<{}, State> {
             // generate user's ethereum wallet, noteString and commitment
             const wallet = ethers.Wallet.createRandom();
             const { noteString, commitment } = getNoteStringAndCommitment(
+                'pbtc',
                 this.state.btcAmount,
                 await this.state.web3.eth.net.getId()
             );

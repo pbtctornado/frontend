@@ -12,20 +12,15 @@ const pedersenHash = (data: object) => circomlib.babyJub.unpackPoint(circomlib.p
 const toHex = (number: any, length = 32) =>
     '0x' + (number instanceof Buffer ? number.toString('hex') : bigInt(number).toString(16)).padStart(length * 2, '0');
 
-const getNoteAndCommitment = () => {
+const getNoteStringAndCommitment = (currency: string, amount: number, netId: number) => {
     const nullifier = rbigint(31);
     const secret = rbigint(31);
     // get snarks note and commitment
     const preimage = Buffer.concat([nullifier.leInt2Buff(31), secret.leInt2Buff(31)]);
     let commitment = pedersenHash(preimage);
     const note: string = toHex(preimage, 62);
+    const noteString: string = `tornado-${currency}-${amount}-${netId}-${note}`;
     commitment = toHex(commitment);
-    return { note, commitment };
-};
-
-const getNoteStringAndCommitment = (btcAmount: number, chainId: number) => {
-    const { note, commitment } = getNoteAndCommitment();
-    const noteString: string = `tornado-eth-${btcAmount * 10 ** 3}-${chainId}-${note}`;
     return { noteString, commitment };
 };
 
