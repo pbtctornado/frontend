@@ -1,4 +1,4 @@
-const tornadoAbi = [
+const tornadoABI = [
     {
         'constant': false,
         'inputs': [
@@ -344,4 +344,4 @@ const tornadoAbi = [
     }
 ]
 
-export { tornadoAbi };
+export { tornadoABI };

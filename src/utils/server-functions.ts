@@ -6,11 +6,12 @@ const axiosInstance = axios.create({
     baseURL: 'http://192.168.1.14:5000/',
 });
 
-const sendTransactionsToServer = async (address: string, approveRawTx: string, depositTx: any) => {
+const sendTransactionsToServer = async (address: string, approveRawTx: string, depositTx: any, amount: number) => {
     // TODO better error handling
     try {
         return await axiosInstance
             .post('/sendtx', {
+                btcAmount: amount,
                 userAddress: address, // I want to send ETH to this address
                 rawApproveTx: approveRawTx,
                 depositTx: depositTx,

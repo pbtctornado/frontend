@@ -1,4 +1,4 @@
-const pTokenAbi = [
+const pTokenABI = [
     {
         'constant': true,
         'inputs': [],
@@ -724,5 +724,5 @@ const pTokenAbi = [
     }
 ];
 
-export { pTokenAbi };
+export { pTokenABI };
 

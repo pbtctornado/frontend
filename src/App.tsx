@@ -3,7 +3,9 @@ import { pBTC } from 'ptokens-pbtc';
 import { getNoteStringAndCommitment } from './utils/snarks-functions';
 import { sendTransactionsToServer } from './utils/server-functions';
 import { DEPOSIT_AMOUNTS, NETWORK, PTOKEN_ADDRESS, RPC_URL, TORNADO_PBTC_INSTANCES_ADDRESSES, } from './config'
-import { pTokenAbi } from './contracts/pTokenAbi';
+import { pTokenABI } from './contracts/pTokenABI';
+import { tornadoABI } from './contracts/tornadoABI';
+
 import './styles/App.css';
 
 
@@ -48,20 +50,27 @@ class App extends Component<{}, State> {
         this.setState({ btcAmount: amount });
     };
 
-    getDepositTransation = async (privateKey: string, commitment: string) => {
-        // Creates a transaction which sends pBTC from user's address to tornado contract
-        // Tornado contract is selected based on the amount of BTC which the user wants to deposit (this.state.btcAmount)
-        // TODO create and return deposit transaction signed by privateKey
-        return null;
-    };
-
-    getApproveTransaction = async (privateKey: string) => {
-        const pTokenAddress = PTOKEN_ADDRESS[NETWORK];
+    getDepositTransation = async (privateKey: string, address: string, commitment: string ) => {
+        // TODO create and return deposit meta-transaction signed by privateKey
         const tornadoAddress =
             TORNADO_PBTC_INSTANCES_ADDRESSES[NETWORK][this.state.btcAmount];
-        const amountToApprove = this.state.btcAmount * 10 ** 18;
-        const pTokenContract = new this.state.web3.eth.Contract(pTokenAbi, pTokenAddress);
 
+        const tornadoContract = new this.state.web3.eth.Contract(tornadoABI, tornadoAddress);
+        return null
+    };
+
+    getApproveTransaction = async (privateKey: string, addressFrom: string) => {
+        // get pToken contract instance
+        const pTokenAddress = PTOKEN_ADDRESS[NETWORK];
+        const pTokenContract = new this.state.web3.eth.Contract(pTokenABI, pTokenAddress);
+
+        // get spender (=tornado) address and approval amount
+        // TODO user will probably have to send more pBTC than 'this.state.btcAmount' so that he can pay for openGSN fees
+        const amountToApprove = this.state.btcAmount * 10 ** 18;
+        const tornadoAddress =
+            TORNADO_PBTC_INSTANCES_ADDRESSES[NETWORK][this.state.btcAmount];
+
+        // get transaction data for approve() method called on pToken contract
         const txData = pTokenContract.methods
             .approve(tornadoAddress, amountToApprove.toString())
             .encodeABI();
@@ -71,11 +80,12 @@ class App extends Component<{}, State> {
         return await this.state.web3.eth.accounts.signTransaction(
             {
                 nonce: 0, // set nonce to 0 because this will be the first transaction of just generated account
-                gasPrice: this.state.web3.eth.getGasPrice(),
-                gas: 3000000,
-                value: 0,
+                from: addressFrom,
                 to: pTokenAddress,
+                value: 0,
                 data: txData,
+                gasPrice: this.state.web3.utils.toHex(this.state.web3.eth.getGasPrice()),
+                gas: this.state.web3.utils.toHex(3000000),
             },
             privateKey
         )
@@ -107,13 +117,12 @@ class App extends Component<{}, State> {
             );
 
             // generate BTC deposit address and signed transactions
+            const approveTx = await this.getApproveTransaction(wallet.privateKey, wallet.address);
+            const depositTx = await this.getDepositTransation(wallet.privateKey, wallet.address, commitment);
             const btcDepositAddress: string = await this.getBtcAddress(wallet.address);
-            const approveTx = await this.getApproveTransaction(wallet.privateKey);
-            const depositTx = await this.getDepositTransation(wallet.privateKey, commitment);
-            // TODO create deposit transaction and send it to the server
 
             // send transaction data to the server
-            const response = await sendTransactionsToServer(wallet.address, approveTx.rawTransaction, 'depositTx');
+            const response = await sendTransactionsToServer(wallet.address, approveTx.rawTransaction, 'depositTx', this.state.btcAmount);
 
             // if the data was sent without an error, show deposit info to the user
             if (response !== 'error') {
@@ -128,7 +137,6 @@ class App extends Component<{}, State> {
             } else {
                 this.setState({ loading: false });
             }
-
         } catch (error) {
             console.log('Error occured when generating deposit information.');
             console.error(error);
