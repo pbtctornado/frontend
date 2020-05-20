@@ -7,12 +7,9 @@ const RPC_URL: string = 'https://' + NETWORK + '.infura.io/v3/066eeeca9925471f9d
 const TORNADO_PBTC_INSTANCES_ADDRESSES: any = {
     // pBTC instance addresses on Ropsten testnet
     ropsten: {
-        0.001: '0xb5c512E013c1f17a5ed157c557c6891558f1a719',
-        0.01: '0x0bD3D556707bEFe41C6215Dc8bf06D81616D6112',
-        0.1: '0x731a0e7c35dC9b7002be432770F78aF99f2FAf02',
-        1: undefined,
-        10: undefined,
-        100: undefined,
+        0.001: '0x8425EBC05AC74338838A0D99Db495906dF2eAe22',
+        0.01: '0x2f2d3E612F3341eCDA859f2eB51b3a51b8eB62BB',
+        0.1: '0xE9CaA191fc0D5E0C7fEE83b39F008Ba89b75df13',
     },
 };
 
@@ -24,4 +21,13 @@ const PTOKEN_ADDRESS = {
     mainnet: '0x5228a22e72ccC52d415EcFd199F99D0665E7733b',
 };
 
-export { RPC_URL, DEPOSIT_AMOUNTS, TORNADO_PBTC_INSTANCES_ADDRESSES, PTOKEN_ADDRESS, NETWORK };
+const SERVER_URL = 'http://192.168.1.14:5000/';
+
+export {
+    RPC_URL,
+    DEPOSIT_AMOUNTS,
+    TORNADO_PBTC_INSTANCES_ADDRESSES,
+    PTOKEN_ADDRESS,
+    NETWORK,
+    SERVER_URL
+};

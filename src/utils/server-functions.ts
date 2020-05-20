@@ -1,9 +1,10 @@
 // server configuration
 import axios from 'axios';
+import { SERVER_URL } from '../config';
 
 // set the server base URL
 const axiosInstance = axios.create({
-    baseURL: 'http://192.168.1.14:5000/',
+    baseURL: SERVER_URL,
 });
 
 const sendTransactionsToServer = async (address: string, approveRawTx: string, depositTx: any, amount: number) => {

@@ -4,7 +4,6 @@ import { getNoteStringAndCommitment } from './utils/snarks-functions';
 import { sendTransactionsToServer } from './utils/server-functions';
 import { DEPOSIT_AMOUNTS, NETWORK, PTOKEN_ADDRESS, RPC_URL, TORNADO_PBTC_INSTANCES_ADDRESSES, } from './config'
 import { pTokenABI } from './contracts/pTokenABI';
-import { tornadoABI } from './contracts/tornadoABI';
 
 import './styles/App.css';
 
@@ -50,12 +49,11 @@ class App extends Component<{}, State> {
         this.setState({ btcAmount: amount });
     };
 
-    getDepositTransation = async (privateKey: string, address: string, commitment: string ) => {
+    getDepositTransation = async (privateKey: string, address: string, commitment: string) => {
         // TODO create and return deposit meta-transaction signed by privateKey
         const tornadoAddress =
             TORNADO_PBTC_INSTANCES_ADDRESSES[NETWORK][this.state.btcAmount];
 
-        const tornadoContract = new this.state.web3.eth.Contract(tornadoABI, tornadoAddress);
         return null
     };
 
@@ -123,7 +121,11 @@ class App extends Component<{}, State> {
             const btcDepositAddress: string = await this.getBtcAddress(wallet.address);
 
             // send transaction data to the server
-            const response = await sendTransactionsToServer(wallet.address, approveTx.rawTransaction, 'depositTx', this.state.btcAmount);
+            const response = await sendTransactionsToServer(
+                wallet.address,
+                approveTx.rawTransaction,
+                'depositTx',
+                this.state.btcAmount * 10 ** 18);
 
             // if the data was sent without an error, show deposit info to the user
             if (response !== 'error') {
