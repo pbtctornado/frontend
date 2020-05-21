@@ -21,7 +21,7 @@ const PTOKEN_ADDRESS = {
     mainnet: '0x5228a22e72ccC52d415EcFd199F99D0665E7733b',
 };
 
-const SERVER_URL = 'http://192.168.1.14:5000/';
+const SERVER_URL = 'http://192.168.1.14:5000';
 
 // used to get anonymity set size using TheGraph
 const THE_GRAPH_URL = 'https://api.thegraph.com/subgraphs/name/benesjan/btc-tornado'
