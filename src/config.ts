@@ -23,11 +23,15 @@ const PTOKEN_ADDRESS = {
 
 const SERVER_URL = 'http://192.168.1.14:5000/';
 
+// used to get anonymity set size using TheGraph
+const THE_GRAPH_URL = 'https://api.thegraph.com/subgraphs/name/benesjan/btc-tornado'
+
 export {
     RPC_URL,
     DEPOSIT_AMOUNTS,
     TORNADO_PBTC_INSTANCES_ADDRESSES,
     PTOKEN_ADDRESS,
     NETWORK,
-    SERVER_URL
+    SERVER_URL,
+    THE_GRAPH_URL
 };

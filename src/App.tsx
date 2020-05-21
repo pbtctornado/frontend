@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { pBTC } from 'ptokens-pbtc';
 import { getNoteStringAndCommitment } from './utils/snarks-functions';
-import { sendTransactionsToServer } from './utils/server-functions';
+import { getAnonymitySetSize, sendTransactionsToServer } from './utils/axios-functions';
 import { DEPOSIT_AMOUNTS, NETWORK, PTOKEN_ADDRESS, RPC_URL, TORNADO_PBTC_INSTANCES_ADDRESSES, } from './config'
 import { pTokenABI } from './contracts/pTokenABI';
 
@@ -14,12 +14,14 @@ const Web3 = require('web3');
 // State interface
 interface State {
     btcAmount: number; // the amount of BTC which the user wants to send to Tornado
+    anonymitySetSize: number;
     btcDepositAddress: string;
     noteString: string; // a string which allows the user to withdraw pBTC from Tornado
     pbtc: any; // pbtc instance which allows us to generate BTC deposit address
     wallet: any; // stores information about mnemonic, address, private key
     web3: any;
     loading: boolean;
+    anonymitySetLoading: boolean;
 }
 
 // pass props and State interface to Component class
@@ -28,25 +30,35 @@ class App extends Component<{}, State> {
         super(props);
 
         this.state = {
-            btcAmount: 0.1, // default option
+            btcAmount: 0.001, // default option
+            anonymitySetSize: 0,
             btcDepositAddress: '',
             noteString: '',
             pbtc: null,
             wallet: null,
             web3: null,
             loading: false,
+            anonymitySetLoading: false
         };
     }
 
     componentDidMount = async () => {
         // I have to use Web3 provider, because pbtc instance accepts only Web3 provider, not default ethers providers
         const web3 = new Web3(new Web3.providers.HttpProvider(RPC_URL));
+
+        // load anonymity et size
+        this.setAnonymitySetSize(this.state.btcAmount)
+
         this.setState({ web3 });
+
     };
 
     // set the amount of BTC which the user wants to deposit
     setBtcAmountHandler = (amount: number) => {
         this.setState({ btcAmount: amount });
+
+        // show anonymity set size for selected amount
+        this.setAnonymitySetSize(amount)
     };
 
     getDepositTransation = async (privateKey: string, address: string, commitment: string) => {
@@ -147,6 +159,12 @@ class App extends Component<{}, State> {
         }
     };
 
+    setAnonymitySetSize = async (amount: number) => {
+        this.setState({ anonymitySetLoading: true });
+        let size = await getAnonymitySetSize(amount)
+        this.setState({ anonymitySetSize: size, anonymitySetLoading: false });
+    }
+
     render() {
         const amountOptions = (
             <ul className="deposit-amounts-ul">
@@ -166,6 +184,7 @@ class App extends Component<{}, State> {
                 ))}
             </ul>
         );
+
 
         // show deposit information is available
         let depositInfo = <></>;
@@ -196,11 +215,14 @@ class App extends Component<{}, State> {
                 <h1>Tornado Bitcoin</h1>
                 Select the amount of BTC to deposit:
                 {amountOptions}
+                <h3>Anonymity set size: {this.state.anonymitySetSize}</h3>
+
                 <button onClick={this.showDepositInfoHandler}>
                     Show BTC deposit address
                 </button>
                 {depositInfo}
                 {this.state.loading ? <div>Loading...</div> : <></>}
+
             </div>
         );
     }
