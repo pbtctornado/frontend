@@ -20,3 +20,23 @@ button {
   display: inline-block !important;
   width: 2em;
 }
+
+/***  WITHDRAW PAGE ***/
+.withdraw-wrapper label {
+  display: block;
+}
+
+.withdraw-note-label input {
+  height: 100px;
+}
+
+.btc-recipient-label input {
+  width: 300px;
+}
+
+.page-selector-div button {
+  display: inline-block;
+  margin: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
