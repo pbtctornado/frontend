@@ -10,12 +10,14 @@ const ethers = require('ethers');
 interface DepositPageState {
     btcAmount: number; // the amount of BTC which the user wants to send to Tornado
     anonymitySetSize: number;
+    depositAmountWithFees: number;
     btcDepositAddress: string;
     noteString: string; // a string which allows the user to withdraw pBTC from Tornado
     pbtc: any; // pbtc instance which allows us to generate BTC deposit address
     wallet: any; // stores information about mnemonic, address, private key
     loading: boolean;
     anonymitySetLoading: boolean;
+    showDepositInfo: boolean;
 }
 
 interface DepositPageProps {
@@ -31,14 +33,17 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
         this.state = {
             btcAmount: 0.001, // default option
             anonymitySetSize: 0,
+            depositAmountWithFees: 0,
             btcDepositAddress: '',
             noteString: '',
             pbtc: null,
             wallet: null,
             loading: false,
-            anonymitySetLoading: false
+            anonymitySetLoading: false,
+            showDepositInfo: false,
         };
     }
+
     componentDidMount = async () => {
         // load anonymity et size
         this.setAnonymitySetSize(this.state.btcAmount)
@@ -46,7 +51,7 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
 
     // set the amount of BTC which the user wants to deposit
     setBtcAmountHandler = (amount: number) => {
-        this.setState({ btcAmount: amount });
+        this.setState({ btcAmount: amount, showDepositInfo: false });
 
         // show anonymity set size for selected amount
         this.setAnonymitySetSize(amount)
@@ -137,6 +142,7 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
                     wallet,
                     noteString,
                     loading: false,
+                    showDepositInfo: true,
                 }, () => {
                     console.log('Success!')
                 });
@@ -162,16 +168,18 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
             <ul className="deposit-amounts-ul">
                 {DEPOSIT_AMOUNTS.map((amount, index) => (
                     <li key={index}>
-                        <input
-                            checked={this.state.btcAmount === amount}
-                            type="radio"
-                            name="btcAmounts"
-                            id={index.toString()}
-                            value={amount}
-                            onChange={() => this.setBtcAmountHandler(amount)}
-                            disabled={this.state.loading} // don't allow the user to change pBTC amount while the BTC address is being generated
-                        />
-                        <label htmlFor={index.toString()}>{amount} BTC</label>
+                        <label className="container">{amount}
+                            <input
+                                checked={this.state.btcAmount === amount}
+                                type="radio"
+                                name="btcAmounts"
+                                id={index.toString()}
+                                value={amount}
+                                onChange={() => this.setBtcAmountHandler(amount)}
+                                disabled={this.state.loading} // don't allow the user to change pBTC amount while the BTC address is being generated
+                            />
+                            <span className="checkmark"></span>
+                        </label>
                     </li>
                 ))}
             </ul>
@@ -183,34 +191,42 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
             this.state.btcDepositAddress !== '' &&
             this.state.wallet !== null &&
             this.state.noteString !== '' &&
-            !this.state.loading
+            !this.state.loading &&
+            this.state.showDepositInfo
         ) {
             let { address, mnemonic } = this.state.wallet;
 
             depositInfo = (
-                <div>
-                    Send Bitcoin to this address: <br />
-                    {this.state.btcDepositAddress}
-                    <br /> <br />
-                    Your note: <br />
-                    {this.state.noteString} <br /> <br />
-                    pBTC will be sent to this Address: <br />
-                    {address} <br /> <br />
-                    Mnemonic phrase to access your wallet: <br />
-                    {mnemonic} <br /> <br />
+                <div className='deposit-info-div'>
+                    <div className='remember-info'>
+                        <h2>Deposit information:</h2>
+                        {/*// TODO add fee to BTC amount. Get fee here 0x55Ef931a040b28657c53c9847de05d81456380Ff*/}
+                        <b>Send {this.state.btcAmount} bitcoins to this address:</b> <br />
+                        {this.state.btcDepositAddress}
+                        <br /> <br />
+                        <b>Your note to withdraw anonymized BTC:</b> <br />
+                        {this.state.noteString} <br /> <br />
+                    </div>
+                    {/*<h4>In case the transaction to tornado fails, this is the wallet where you receive non-anonymised BTC</h4>*/}
+                    {/*<b>Wallet address:</b> <br />*/}
+                    {/*{address} <br /> <br />*/}
+                    {/*<b>Mnemonic phrase to access your wallet:</b>  <br />*/}
+                    {/*{mnemonic} <br /> <br />*/}
                 </div>
             );
         }
 
-        return (<div> Select the amount of BTC to deposit:
+        return (<div>
+            <h3 className='deposit-headline'>Choose the amount of BTC to anonymize</h3>
             {amountOptions}
-            <h3>Anonymity set size: {this.state.anonymitySetSize}</h3>
 
-            <button onClick={this.showDepositInfoHandler}>
-                Generate deposit information
-            </button>
             {depositInfo}
-            {this.state.loading ? <div>Loading...</div> : <></>}
+            {this.state.loading ? <b>Loading...</b> :
+                <button className='generate-deposit-info-button hover-button' onClick={this.showDepositInfoHandler}>
+                    Generate deposit information
+                </button>}
+            <h3 className='anonymity-size-h'>Anonymity set size: {this.state.anonymitySetSize}</h3>
+
         </div>);
     }
 }

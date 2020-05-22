@@ -1,42 +1,255 @@
+:root {
+    --main-yellow: #f7931a;
+}
+
+body {
+    background-color: #ECEFF1;
+    color: #263238;
+    padding: 20px 10px;
+    /*padding-top: 20px;*/
+    /*background-image: linear-gradient(#ffafbd, #ffc3a0);*/
+    background: radial-gradient(#e6e7ea, #fff);
+    background-repeat: no-repeat;
+    background-size: auto;
+    min-height: 100vh;
+}
+
 button {
-  display: block;
-  margin: 1em auto;
+    display: block;
+    margin: 1em auto;
+    cursor: pointer;
+}
+
+button:focus {
+    outline: 0;
 }
 
 .App {
-  text-align: center;
+    text-align: center;
+}
+
+.logo {
+    max-width: 280px;
+    margin-top: 15px;
+    margin-bottom: 60px;
+}
+
+.page-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 20px 20px 20px;
+    position: relative;
+    overflow-wrap: break-word;
+    background-color: white;
+    border-radius: 30px;
+    border: 1px solid #eeeeef;
+    /*-webkit-box-shadow: 2px 2px 22px -4px rgba(199,208,224,1);*/
+    /*-moz-box-shadow: 2px 2px 22px -4px rgba(199,208,224,1);*/
+    /*box-shadow: 2px 2px 22px -4px rgba(199,208,224,1);*/
+}
+
+.page-selector-div {
+    text-align: center;
+}
+
+
+.page-selector-div button {
+    display: inline-block;
+    margin: 5px 10px;
+    padding: 12px 35px;
+    font-size: 20px;
+    font-weight: bolder;
+    margin-bottom: 0;
+    color: #606263;
+    border-radius: 100px;
+    border: 1px solid #ccc;
+    background-color: white;
+    transition: 0.2s;
+}
+
+.page-selector-div .unselected:hover {
+ background-color: #eee;
+}
+
+.page-selector-div .selected {
+    background-color: var(--main-yellow);
+    color: white;
+    border-color: var(--main-yellow);
+}
+
+.content-wrapper {
+    /*border: 2px solid var(--main-yellow);*/
+    padding: 40px 10px 20px 10px;
+    background-color: white;
+}
+
+
+/***  WITHDRAW PAGE ***/
+.withdraw-wrapper {
+    text-align: left;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.withdraw-wrapper label {
+    display: block;
+}
+
+/*.withdraw-note-label input {*/
+/*    height: 100px;*/
+/*}*/
+
+.btc-recipient-label input {
+    width: 300px;
+}
+
+.withdraw-wrapper input {
+    padding: 8px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    display: block;
+    margin: 10px auto;
+    width: 100%;
+    font-size: 17px;
+    color: inherit;
+}
+
+.withdraw-button {
+    margin-top: 40px;
+    margin-bottom: 0;
+    border-radius: 50px !important;
+}
+/* DEPOSIT PAGE */
+.hover-button {
+    background-color: white;
+    color: var(--main-yellow);
+    border: 2px solid var(--main-yellow);
+    padding: 10px;
+    font-weight: 600;
+    font-size: 17px;
+    transition: 0.2s;
+    border-radius: 3px;
+}
+
+.hover-button:hover {
+    background-color: var(--main-yellow);
+    color: white;
+
+}
+
+.anonymity-size-h {
+    position: absolute;
+    /*bottom: -60px;*/
+    font-weight: 400;
+    color: #888889;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .deposit-amounts-ul {
-  list-style: none;
+    list-style: none;
 }
 
 .deposit-amounts-ul li {
-  display: inline-block;
-  margin: 0.5em 2em;
+    display: inline-block;
+    margin: 0.5em 2em;
 }
 
 .deposit-amounts-ul li input {
-  display: inline-block !important;
-  width: 2em;
+    display: inline-block !important;
+    width: 2em;
 }
 
-/***  WITHDRAW PAGE ***/
-.withdraw-wrapper label {
-  display: block;
+.deposit-info-div {
+    width: 90%;
+    max-width: 600px;
+    text-align: left;
+    margin: 0 auto;
 }
 
-.withdraw-note-label input {
-  height: 100px;
+.remember-info h2 {
+    color: var(--main-yellow);
 }
 
-.btc-recipient-label input {
-  width: 300px;
+.deposit-headline {
+    margin-bottom: 35px;
+    font-size: 20px;
 }
 
-.page-selector-div button {
-  display: inline-block;
-  margin: 5px;
-  padding: 8px 12px;
-  cursor: pointer;
+/*** CUSTOM RADIO BUTTON ***/
+/* Customize the label (the container) */
+.container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-weight: 500;
 }
+
+/* Hide the browser's default radio button */
+.container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.generate-deposit-info-button {
+    margin-top: 30px;
+    border-radius: 50px;
+}
+
+/* Create a custom radio button */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+    background-color: var(--main-yellow);
+    border-color: var(--main-yellow);
+
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+    top: 7px;
+    left: 7px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #d67500;
+}
+

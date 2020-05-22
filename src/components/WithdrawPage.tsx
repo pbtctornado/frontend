@@ -33,7 +33,7 @@ class WithdrawPage extends Component<{}, WithdrawPageState> {
     render() {
         return <div className='withdraw-wrapper'>
             <label className='withdraw-note-label'>
-                Your Note:
+                <b>Your Note:</b>
                 <input
                     name="note"
                     type="text"
@@ -41,8 +41,9 @@ class WithdrawPage extends Component<{}, WithdrawPageState> {
                     onChange={this.handleChange}
                 />
             </label>
+            <br/>
             <label className='btc-recipient-label'>
-                Recipient Bitcoin Address:
+                <b>Recipient Bitcoin Address:</b>
                 <input
                     name="btcReceiverAddress"
                     type="text"
@@ -50,6 +51,7 @@ class WithdrawPage extends Component<{}, WithdrawPageState> {
                     onChange={this.handleChange}
                 />
             </label>
+            <button className='hover-button withdraw-button'>Withdraw</button>
         </div>;
     };
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { RPC_URL, } from './config'
 import WithdrawPage from './components/WithdrawPage';
 import DepositPage from './components/DepositPage';
+import logo from './images/logo.svg';
 
 import './styles/App.css';
 
@@ -35,7 +36,6 @@ class App extends Component<{}, State> {
     };
 
 
-
     switchToDeposit = () => {
         this.setState({ pageSelected: 'deposit' })
     }
@@ -46,21 +46,33 @@ class App extends Component<{}, State> {
 
     render() {
 
-        let pageContent = (<DepositPage
-            web3={this.state.web3}
-        />);
+        let withdrawButtonClasses = 'unselected';
+        let depositButtonClasses = 'unselected';
+
+        let pageContent;
 
         if (this.state.pageSelected === 'withdraw') {
-            pageContent = <WithdrawPage/>;
+            withdrawButtonClasses = 'selected'
+            pageContent = <WithdrawPage />;
+        } else {
+            depositButtonClasses = 'selected'
+            pageContent = <DepositPage
+                web3={this.state.web3}
+            />;
+
         }
         return (
             <div className="App">
-                <h1>BTC Tornado</h1>
-                <div className='page-selector-div'>
-                    <button onClick={this.switchToDeposit}>Deposit</button>
-                    <button onClick={this.switchToWithdraw}>Withdraw</button>
+                <img src={logo} className="logo" alt="logo" />
+                <div className='page-wrapper'>
+                    <div className='page-selector-div'>
+                        <button className={depositButtonClasses} onClick={this.switchToDeposit}>Deposit</button>
+                        <button className={withdrawButtonClasses} onClick={this.switchToWithdraw}>Withdraw</button>
+                    </div>
+                    <div className='content-wrapper'>
+                    {pageContent}
+                    </div>
                 </div>
-                {pageContent}
             </div>
         );
     }
