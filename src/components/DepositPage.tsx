@@ -168,7 +168,7 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
             <ul className="deposit-amounts-ul">
                 {DEPOSIT_AMOUNTS.map((amount, index) => (
                     <li key={index}>
-                        <label className="container">{amount}
+                        <label className="container">{amount} BTC
                             <input
                                 checked={this.state.btcAmount === amount}
                                 type="radio"
@@ -198,8 +198,8 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
 
             depositInfo = (
                 <div className='deposit-info-div'>
+                    <h3>Deposit information:</h3>
                     <div className='remember-info'>
-                        <h2>Deposit information:</h2>
                         {/*// TODO add fee to BTC amount. Get fee here 0x55Ef931a040b28657c53c9847de05d81456380Ff*/}
                         <b>Send {this.state.btcAmount} bitcoins to this address:</b> <br />
                         {this.state.btcDepositAddress}

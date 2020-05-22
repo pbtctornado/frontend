@@ -1,5 +1,7 @@
 :root {
-    --main-yellow: #f7931a;
+    --main-yellow: #f35c21;
+    --light-yellow: #ffd1be;
+
 }
 
 body {
@@ -30,8 +32,8 @@ button:focus {
 
 .logo {
     max-width: 280px;
-    margin-top: 15px;
-    margin-bottom: 60px;
+    margin-top: 20px;
+    margin-bottom: 40px;
 }
 
 .page-wrapper {
@@ -50,25 +52,34 @@ button:focus {
 
 .page-selector-div {
     text-align: center;
+    background-color: #eee;
+    border-radius: 100px;
+    max-width: 330px;
+    margin: 0 auto;
+    -webkit-box-shadow: inset 0px 0px 13px 0px rgba(230,230,230,1);
+    -moz-box-shadow: inset 0px 0px 13px 0px rgba(230,230,230,1);
+    box-shadow: inset 0px 0px 13px 0px rgba(230,230,230,1);
 }
 
 
 .page-selector-div button {
     display: inline-block;
-    margin: 5px 10px;
+    /*margin: 5px 10px;*/
+    margin: 0;
+    width: 50%;
     padding: 12px 35px;
     font-size: 20px;
     font-weight: bolder;
-    margin-bottom: 0;
     color: #606263;
     border-radius: 100px;
-    border: 1px solid #ccc;
-    background-color: white;
-    transition: 0.2s;
+    /*border: 1px solid #ccc;*/
+    border: none;
+    background-color: transparent;
+    transition: 0.1s;
 }
 
 .page-selector-div .unselected:hover {
- background-color: #eee;
+    background-color: #eee;
 }
 
 .page-selector-div .selected {
@@ -119,6 +130,7 @@ button:focus {
     margin-bottom: 0;
     border-radius: 50px !important;
 }
+
 /* DEPOSIT PAGE */
 .hover-button {
     background-color: white;
@@ -168,8 +180,17 @@ button:focus {
     margin: 0 auto;
 }
 
-.remember-info h2 {
-    color: var(--main-yellow);
+.deposit-info-div h3 {
+    margin-top: 34px;
+    text-align: center;
+}
+
+.remember-info {
+    padding: 15px;
+    background-color: #f2f2f3;
+    border: 1px solid #e1e1e2;
+    border-radius: 5px;
+    font-size: 17px;
 }
 
 .deposit-headline {
@@ -185,7 +206,7 @@ button:focus {
     padding-left: 35px;
     margin-bottom: 12px;
     cursor: pointer;
-    font-size: 22px;
+    font-size: 20px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -203,7 +224,7 @@ button:focus {
 }
 
 .generate-deposit-info-button {
-    margin-top: 30px;
+    margin-top: 40px;
     border-radius: 50px;
 }
 
@@ -250,6 +271,6 @@ button:focus {
     width: 11px;
     height: 11px;
     border-radius: 50%;
-    background: #d67500;
+    background: #c92e00;
 }
 
