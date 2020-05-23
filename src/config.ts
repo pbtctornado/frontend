@@ -21,6 +21,8 @@ const PTOKEN_ADDRESS = {
     mainnet: '0x5228a22e72ccC52d415EcFd199F99D0665E7733b',
 };
 
+const PAYMASTER_ADDRESS = '0x55Ef931a040b28657c53c9847de05d81456380Ff';
+
 const SERVER_URL = 'http://192.168.1.14:5000';
 
 // used to get anonymity set size using TheGraph
@@ -31,6 +33,7 @@ export {
     DEPOSIT_AMOUNTS,
     TORNADO_PBTC_INSTANCES_ADDRESSES,
     PTOKEN_ADDRESS,
+    PAYMASTER_ADDRESS,
     NETWORK,
     SERVER_URL,
     THE_GRAPH_URL

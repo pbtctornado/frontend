@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
-import { DEPOSIT_AMOUNTS, NETWORK, PTOKEN_ADDRESS, TORNADO_PBTC_INSTANCES_ADDRESSES } from '../config';
+import {
+    DEPOSIT_AMOUNTS,
+    NETWORK,
+    PAYMASTER_ADDRESS,
+    PTOKEN_ADDRESS,
+    TORNADO_PBTC_INSTANCES_ADDRESSES
+} from '../config';
 import { pTokenABI } from '../contracts/pTokenABI';
+import { paymasterABI } from '../contracts/paymasterABI'
 import { pBTC } from 'ptokens-pbtc';
 import { getNoteStringAndCommitment } from '../utils/snarks-functions';
 import { getAnonymitySetSize, sendTransactionsToServer } from '../utils/axios-functions';
@@ -10,6 +17,7 @@ const ethers = require('ethers');
 
 interface DepositPageState {
     btcAmount: number; // the amount of BTC which the user wants to send to Tornado
+    paymasterFee: number;
     anonymitySetSize: number;
     depositAmountWithFees: number;
     btcDepositAddress: string;
@@ -33,6 +41,7 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
 
         this.state = {
             btcAmount: 0.001, // default option
+            paymasterFee: 0,
             anonymitySetSize: 0,
             depositAmountWithFees: 0,
             btcDepositAddress: '',
@@ -110,6 +119,18 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
         return btcDepositAddress.toString();
     };
 
+    /**
+     * Returns pBTC fee which is charged by paymaster contract
+     */
+    getPaymasterFee = async () => {
+        const paymasterContract = new this.props.web3.eth.Contract(paymasterABI, PAYMASTER_ADDRESS);
+        // get fee from paymaster contract
+        let fee = await paymasterContract.methods.fee().call()
+        // convert it to the same format as BTC displayed in the UI
+        fee = parseFloat(fee) / 10 ** 18
+        return fee
+    }
+
     // this function is executed when the user confirms his deposit amount of BTC
     showDepositInfoHandler = async () => {
         // TODO better error handling
@@ -128,6 +149,7 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
             const approveTx = await this.getApproveTransaction(wallet.privateKey, wallet.address);
             const depositTx = await this.getDepositTransation(wallet.privateKey, wallet.address, commitment);
             const btcDepositAddress: string = await this.getBtcAddress(wallet.address);
+            const paymasterFee = await this.getPaymasterFee();
 
             // send transaction data to the server
             const response = await sendTransactionsToServer(
@@ -139,6 +161,7 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
             // if the data was sent without an error, show deposit info to the user
             if (response !== 'error') {
                 this.setState({
+                    paymasterFee,
                     btcDepositAddress,
                     wallet,
                     noteString,
@@ -196,18 +219,18 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
             this.state.showDepositInfo
         ) {
             let { address, mnemonic } = this.state.wallet;
+            let { paymasterFee, btcAmount } = this.state;
 
             depositInfo = (
                 <div className='deposit-info-div'>
-                    <h3>Deposit information:</h3>
-                    <div className='remember-info'>
-                        {/*// TODO add fee to BTC amount. Get fee here 0x55Ef931a040b28657c53c9847de05d81456380Ff*/}
-                        <b>Send {this.state.btcAmount} bitcoins to this address:</b> <br />
-                        {this.state.btcDepositAddress}
-                        <br /> <br />
-                        <b>Your note to withdraw anonymized BTC:</b> <br />
-                        {this.state.noteString} <br /> <br />
+                    <h3>DEPOSIT INFORMATION:</h3>
+                    <div>
+                        <b>Send <span style={{color: '#f35c21'}}>{(btcAmount + paymasterFee).toFixed(4).toString()} BTC</span> to this address:</b>
+                        <div className='remember-info'>{this.state.btcDepositAddress}</div>
+                        <b>Your note to withdraw anonymized BTC:</b>
+                        <div className='remember-info'>{this.state.noteString}</div>
                     </div>
+                    <span className='fee-name'>* we charge {paymasterFee} BTC fee to pay for all the necessary transactions</span>
                     {/*<h4>In case the transaction to tornado fails, this is the wallet where you receive non-anonymised BTC</h4>*/}
                     {/*<b>Wallet address:</b> <br />*/}
                     {/*{address} <br /> <br />*/}
