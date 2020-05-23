@@ -225,7 +225,7 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
                 <div className='deposit-info-div'>
                     <h3>DEPOSIT INFORMATION:</h3>
                     <div>
-                        <b>Send <span style={{color: '#f35c21'}}>{(btcAmount + paymasterFee).toFixed(4).toString()} BTC</span> to this address:</b>
+                        <b>Send <span style={{color: '#f35c21'}}>{(btcAmount + paymasterFee).toFixed(4).toString()} BTC *</span> to this address:</b>
                         <div className='remember-info'>{this.state.btcDepositAddress}</div>
                         <b>Your note to withdraw anonymized BTC:</b>
                         <div className='remember-info'>{this.state.noteString}</div>

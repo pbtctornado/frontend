@@ -43,7 +43,7 @@ class WithdrawPage extends Component<{}, WithdrawPageState> {
             </label>
             <br/>
             <label className='btc-recipient-label'>
-                <b>Recipient Bitcoin Address:</b>
+                <b>Recipient's Bitcoin Address:</b>
                 <input
                     name="btcReceiverAddress"
                     type="text"
