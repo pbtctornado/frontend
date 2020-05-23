@@ -4,6 +4,7 @@ import { pTokenABI } from '../contracts/pTokenABI';
 import { pBTC } from 'ptokens-pbtc';
 import { getNoteStringAndCommitment } from '../utils/snarks-functions';
 import { getAnonymitySetSize, sendTransactionsToServer } from '../utils/axios-functions';
+import Spinner from './Spinner';
 
 const ethers = require('ethers');
 
@@ -216,17 +217,24 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
             );
         }
 
+        let depositButton = (
+            <button className='generate-deposit-info-button hover-button' onClick={this.showDepositInfoHandler}>
+                Generate deposit information
+            </button>);
+
+        if (this.state.showDepositInfo) {
+            depositButton = <></>
+        }
+
         return (<div>
             <h3 className='deposit-headline'>Choose the amount of BTC to anonymize</h3>
+            <h3 className='anonymity-size-h'>Anonymity set size: {this.state.anonymitySetSize}</h3>
+
             {amountOptions}
 
             {depositInfo}
-            {this.state.loading ? <b>Loading...</b> :
-                <button className='generate-deposit-info-button hover-button' onClick={this.showDepositInfoHandler}>
-                    Generate deposit information
-                </button>}
-            <h3 className='anonymity-size-h'>Anonymity set size: {this.state.anonymitySetSize}</h3>
 
+            {this.state.loading ? <Spinner /> : <>{depositButton}</>}
         </div>);
     }
 }

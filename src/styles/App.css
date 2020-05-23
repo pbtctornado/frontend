@@ -7,10 +7,10 @@
 body {
     background-color: #ECEFF1;
     color: #263238;
-    padding: 20px 10px;
+    /*padding: 20px 10px;*/
     /*padding-top: 20px;*/
     /*background-image: linear-gradient(#ffafbd, #ffc3a0);*/
-    background: radial-gradient(#e6e7ea, #fff);
+    background: radial-gradient(#e0e2e5, #fff);
     background-repeat: no-repeat;
     background-size: auto;
     min-height: 100vh;
@@ -32,14 +32,15 @@ button:focus {
 
 .logo {
     max-width: 280px;
-    margin-top: 20px;
+    margin-top: 35px;
     margin-bottom: 40px;
 }
 
 .page-wrapper {
     max-width: 700px;
+    min-height: 390px;
     margin: 0 auto;
-    padding: 40px 20px 20px 20px;
+    padding: 40px 20px 10px 20px;
     position: relative;
     overflow-wrap: break-word;
     background-color: white;
@@ -115,18 +116,22 @@ button:focus {
 }
 
 .withdraw-wrapper input {
-    padding: 8px;
-    border-radius: 3px;
-    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #e1e1e2;
     display: block;
     margin: 10px auto;
     width: 100%;
     font-size: 17px;
     color: inherit;
+    background-color: #f8f8f9;
+    -webkit-box-shadow: inset 0px 0px 12px 0px rgba(230,230,230,0.59);
+    -moz-box-shadow: inset 0px 0px 12px 0px rgba(230,230,230,0.59);
+    box-shadow: inset 0px 0px 12px 0px rgba(230,230,230,0.59);
 }
 
 .withdraw-button {
-    margin-top: 40px;
+    margin-top: 43px;
     margin-bottom: 0;
     border-radius: 50px !important;
 }
@@ -150,13 +155,11 @@ button:focus {
 }
 
 .anonymity-size-h {
-    position: absolute;
-    /*bottom: -60px;*/
+    margin-top: 15px;
     font-weight: 400;
     color: #888889;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    margin-bottom: 40px;
+    font-size: 19px;
 }
 
 .deposit-amounts-ul {
@@ -191,10 +194,11 @@ button:focus {
     border: 1px solid #e1e1e2;
     border-radius: 5px;
     font-size: 17px;
+    margin-bottom: 30px;
 }
 
 .deposit-headline {
-    margin-bottom: 35px;
+    margin-bottom: 0px;
     font-size: 20px;
 }
 
