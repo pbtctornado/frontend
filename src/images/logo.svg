@@ -11,17 +11,17 @@
    inkscape:version="1.0 (6e3e5246a0, 2020-05-07)"
    id="svg1026"
    version="1.1"
-   viewBox="0 0 64.834682 17.433391"
-   height="0.68635398in"
-   width="2.5525465in">
+   viewBox="0 0 71.419383 15.133164"
+   height="0.59579384in"
+   width="2.8117867in">
   <defs
      id="defs1020" />
   <sodipodi:namedview
      inkscape:window-maximized="1"
-     inkscape:window-y="0"
-     inkscape:window-x="0"
-     inkscape:window-height="1052"
-     inkscape:window-width="1920"
+     inkscape:window-y="1107"
+     inkscape:window-x="61"
+     inkscape:window-height="1025"
+     inkscape:window-width="1859"
      fit-margin-bottom="0"
      fit-margin-right="0"
      fit-margin-left="0"
@@ -31,9 +31,9 @@
      inkscape:document-rotation="0"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="58.797729"
-     inkscape:cx="158.54287"
-     inkscape:zoom="3.959798"
+     inkscape:cy="68.871272"
+     inkscape:cx="145.17298"
+     inkscape:zoom="2.8"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -54,12 +54,12 @@
     </rdf:RDF>
   </metadata>
   <g
-     transform="translate(162.91691,-56.425091)"
+     transform="translate(160.60282,-57.297628)"
      id="layer1"
      inkscape:groupmode="layer"
      inkscape:label="Layer 1">
     <g
-       transform="matrix(0.82303869,0,0,0.82303869,-24.416358,11.527576)"
+       transform="matrix(0.71444384,0,0,0.71444384,-40.376553,18.324061)"
        id="g920">
       <path
          id="path1152"
@@ -72,27 +72,31 @@
          fill="#ffffff"
          d="m -153.5672,63.5509 c 0.1824,-1.219133 -0.74584,-1.874491 -2.01505,-2.311698 l 0.41171,-1.651458 -1.00524,-0.250509 -0.40083,1.607912 c -0.26429,-0.06579 -0.5357,-0.127875 -0.80543,-0.189524 l 0.40371,-1.61853 -1.00467,-0.25053 -0.41201,1.650889 c -0.21874,-0.04966 -0.43347,-0.09911 -0.6419,-0.150977 l 0.001,-0.0063 -1.38633,-0.346162 -0.26743,1.073692 c 0,0 0.74586,0.170935 0.73011,0.181511 0.40713,0.101747 0.48073,0.371087 0.4684,0.584662 l -0.46896,1.881386 c 0.028,0.0084 0.0643,0.0174 0.10449,0.03342 -0.0334,-0.0095 -0.0693,-0.0174 -0.10623,-0.02625 l -0.6574,2.635529 c -0.0497,0.123583 -0.17609,0.309216 -0.46067,0.238774 0.009,0.01592 -0.73068,-0.182386 -0.73068,-0.182386 l -0.49904,1.150714 1.30814,0.326097 c 0.24339,0.06094 0.48188,0.125017 0.71666,0.184959 l -0.41601,1.670363 1.0041,0.25053 0.41202,-1.652629 c 0.27428,0.07433 0.54054,0.143174 0.8011,0.207881 l -0.41056,1.644858 1.00523,0.25052 0.416,-1.66719 c 1.71416,0.324389 3.00315,0.193541 3.54573,-1.356844 0.4372,-1.248329 -0.0218,-1.968414 -0.92365,-2.43796 0.65679,-0.151461 1.15155,-0.583502 1.28354,-1.475946 z m -2.29679,3.220738 c -0.31064,1.248328 -2.41249,0.573475 -3.09392,0.404279 l 0.55202,-2.212924 c 0.68143,0.170092 2.86657,0.506786 2.5419,1.808645 z m 0.31093,-3.238768 c -0.28344,1.13552 -2.03281,0.558587 -2.6003,0.417143 l 0.50048,-2.007036 c 0.56747,0.141423 2.39502,0.405407 2.09982,1.589893 z" />
     </g>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:8.4788px;line-height:1.25;font-family:sans-serif;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.211972"
-       x="-143.5233"
-       y="66.818031"
-       id="text1160"><tspan
-         sodipodi:role="line"
-         id="tspan1158"
-         x="-143.5233"
+    <g
+       transform="translate(0,-1.0640022)"
+       id="g26">
+      <text
+         id="text1160"
          y="66.818031"
-         style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Bold Italic';fill:#4d4d4d;fill-opacity:1;stroke-width:0.211972">btcTornado</tspan></text>
-    <text
-       id="text910"
-       y="71.492294"
-       x="-143.55838"
-       style="font-style:italic;font-variant:normal;font-weight:600;font-stretch:normal;font-size:3.35058px;line-height:1.25;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Semi-Bold Italic';fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.239498"
-       xml:space="preserve"><tspan
-         style="font-style:italic;font-variant:normal;font-weight:600;font-stretch:normal;font-size:3.35058px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Semi-Bold Italic';fill:#4d4d4d;fill-opacity:1;stroke-width:0.239498"
-         y="71.492294"
+         x="-143.5233"
+         style="font-style:normal;font-weight:normal;font-size:8.4788px;line-height:1.25;font-family:sans-serif;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.211972"
+         xml:space="preserve"><tspan
+           style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Bold Italic';fill:#4d4d4d;fill-opacity:1;stroke-width:0.211972"
+           y="66.818031"
+           x="-143.5233"
+           id="tspan1158"
+           sodipodi:role="line">btcTornado</tspan></text>
+      <text
+         xml:space="preserve"
+         style="font-style:italic;font-variant:normal;font-weight:600;font-stretch:normal;font-size:3.35058px;line-height:1.25;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Semi-Bold Italic';fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.239498"
          x="-143.55838"
-         id="tspan908"
-         sodipodi:role="line">bitcoin mixer using Ethereum </tspan></text>
+         y="71.492294"
+         id="text910"><tspan
+           sodipodi:role="line"
+           id="tspan908"
+           x="-143.55838"
+           y="71.492294"
+           style="font-style:italic;font-variant:normal;font-weight:600;font-stretch:normal;font-size:3.35058px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Semi-Bold Italic';fill:#4d4d4d;fill-opacity:1;stroke-width:0.239498">bitcoin mixer powered by Ethereum </tspan></text>
+    </g>
   </g>
 </svg>
