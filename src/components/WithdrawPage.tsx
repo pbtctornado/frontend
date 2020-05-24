@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import { generateProof, parseNote } from '../utils/snarks-functions';
 import { DEMO_PRIVATE_KEY, NETWORK, TORNADO_PBTC_INSTANCES_ADDRESSES } from '../config';
 import { tornadoABI } from '../contracts/tornadoABI';
+import Spinner from './Spinner';
 
 
 interface WithdrawPageState {
     noteWithdraw: string;
     btcAddress: string;
+    loading: boolean;
+    proofGenerated: boolean;
+    txSent: boolean;
 }
 
 interface WithdrawPageProps {
@@ -19,7 +23,10 @@ class WithdrawPage extends Component<WithdrawPageProps, WithdrawPageState> {
 
         this.state = {
             noteWithdraw: '',
-            btcAddress: ''
+            btcAddress: '',
+            loading: false,
+            proofGenerated: false,
+            txSent: false
         };
     }
 
@@ -28,10 +35,10 @@ class WithdrawPage extends Component<WithdrawPageProps, WithdrawPageState> {
         switch (event.target.name) {
 
             case 'btcRecipientAddress':
-                this.setState({ btcAddress: event.target.value });
+                this.setState({ btcAddress: event.target.value, txSent: false });
                 break;
             case 'note':
-                this.setState({ noteWithdraw: event.target.value });
+                this.setState({ noteWithdraw: event.target.value, txSent: false });
                 break;
             default:
                 break;
@@ -42,56 +49,92 @@ class WithdrawPage extends Component<WithdrawPageProps, WithdrawPageState> {
      * Do an ETH withdrawal
      */
     withdrawHandler = async () => {
-        const refund: string = '0';
-        const recipient = this.state.btcAddress;
-        const web3 = this.props.web3;
-        const { amount, deposit } = parseNote(this.state.noteWithdraw);
+        this.setState({ loading: true, txSent: false })
+        try {
+            const refund: string = '0';
+            const recipient = this.state.btcAddress;
+            const web3 = this.props.web3;
+            const { amount, deposit } = parseNote(this.state.noteWithdraw);
 
-        const tornadoAddress =
-            TORNADO_PBTC_INSTANCES_ADDRESSES[NETWORK][amount];
+            const tornadoAddress =
+                TORNADO_PBTC_INSTANCES_ADDRESSES[NETWORK][amount];
 
-        const tornado = new web3.eth.Contract(
-            tornadoABI,
-            tornadoAddress
-        );
+            const tornado = new web3.eth.Contract(
+                tornadoABI,
+                tornadoAddress
+            );
 
-        const { proof, args } = await generateProof({ deposit, recipient, refund, tornado })
-        args[2] = recipient;
+            const { proof, args } = await generateProof({ deposit, recipient, refund, tornado })
+            args[2] = recipient;
 
-        // private key for demo purposes only
-        const senderPrivateKey = DEMO_PRIVATE_KEY;
-        const accountSender = web3.eth.accounts.privateKeyToAccount(senderPrivateKey);
+            this.setState({ proofGenerated: true })
 
-        const nonce = await web3.eth.getTransactionCount(accountSender.address);
-        const txData = await tornado.methods.withdraw(proof, ...args).encodeABI();
 
-        // sing the transaction with user's private key
-        const txSigned = await web3.eth.accounts.signTransaction(
-            {
-                nonce: nonce,
-                to: tornadoAddress,
-                value: refund.toString(),
-                data: txData,
-                gasPrice: web3.utils.toHex(await web3.eth.getGasPrice()),
-                gas: web3.utils.toHex(1e6),
-            },
-            '0x' + senderPrivateKey
-        )
+            // private key for demo purposes only
+            const senderPrivateKey = DEMO_PRIVATE_KEY;
+            const accountSender = web3.eth.accounts.privateKeyToAccount(senderPrivateKey);
 
-        console.log('Submitting withdraw transaction')
-        web3.eth
-            .sendSignedTransaction(txSigned.rawTransaction)
-            .on('transactionHash', function (hash: string) {
-                console.log(['transferToStaging Trx Hash:' + hash]);
-            })
-            .on('receipt', function (receipt: any) {
-                console.log(['transferToStaging Receipt:', receipt]);
-            })
-            .on('error', console.error);
+            const nonce = await web3.eth.getTransactionCount(accountSender.address);
+            const txData = await tornado.methods.withdraw(proof, ...args).encodeABI();
+
+            // sing the transaction with user's private key
+            const txSigned = await web3.eth.accounts.signTransaction(
+                {
+                    nonce: nonce,
+                    to: tornadoAddress,
+                    value: refund.toString(),
+                    data: txData,
+                    gasPrice: web3.utils.toHex(await web3.eth.getGasPrice()),
+                    gas: web3.utils.toHex(1e6),
+                },
+                '0x' + senderPrivateKey
+            )
+
+            console.log('Submitting withdraw transaction')
+
+            await web3.eth.sendSignedTransaction(txSigned.rawTransaction);
+
+        } catch (e) {
+            console.log('transaction not sent')
+        }
+
+        this.setState({ loading: false, proofGenerated: false, txSent: true, noteWithdraw: '' })
     }
 
 
     render() {
+
+        let loadingInfo = <></>;
+        let proofGenerated = <></>;
+        let sendingTx = <></>;
+        let txSent = <></>
+
+        let withdrawButton = (
+            <button className='hover-button withdraw-button' onClick={this.withdrawHandler}>Withdraw</button>
+        );
+
+        if (this.state.loading) {
+            withdrawButton = <Spinner></Spinner>
+            loadingInfo = <div>1. Generating proof...</div>
+            if (this.state.proofGenerated) {
+                sendingTx = <p>2. Sending transaction...</p>
+            }
+        }
+
+        if (this.state.txSent) {
+            txSent = <p className='successful-withdrawal'>
+                Everything OK!
+                <span style={{
+                    color: '#666',
+                    fontWeight: 'normal',
+                    display: 'block',
+                    fontSize: '16px',
+                    margin: '30px auto 0 auto',
+                    lineHeight: '25px',
+                }}>Bitcoins will arrive soon to: <br /> <b>{this.state.btcAddress}</b></span></p>
+        }
+
+
         return <div className='withdraw-wrapper'>
             <label className='withdraw-note-label'>
                 <b>Your Note:</b>
@@ -112,7 +155,13 @@ class WithdrawPage extends Component<WithdrawPageProps, WithdrawPageState> {
                     onChange={this.handleChange}
                 />
             </label>
-            <button className='hover-button withdraw-button' onClick={this.withdrawHandler}>Withdraw</button>
+            <div className='withdrawal-info'>
+                {withdrawButton}
+                {loadingInfo}
+                {proofGenerated}
+                {sendingTx}
+                {txSent}
+            </div>
         </div>;
     }
 

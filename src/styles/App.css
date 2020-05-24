@@ -132,6 +132,21 @@ button:focus {
     border-radius: 50px !important;
 }
 
+.withdrawal-info {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 300;
+    padding-bottom: 20px;
+    color: #666667;
+}
+
+.successful-withdrawal {
+    margin: 30px auto;
+    color: #2dbb4d;
+    font-size: 18px;
+    font-weight: 500;
+}
+
 /* DEPOSIT PAGE */
 .hover-button {
     background-color: white;
