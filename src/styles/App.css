@@ -5,13 +5,11 @@
 }
 
 body {
-    background-color: #ECEFF1;
     color: #263238;
     /*padding: 20px 10px;*/
     /*padding-top: 20px;*/
     /*background-image: linear-gradient(#ffafbd, #ffc3a0);*/
-    background: radial-gradient(#e0e2e5, #fff);
-    background-repeat: no-repeat;
+    background: #eceff1 radial-gradient(at 50% 55%, #d6dae0, #fff) no-repeat;
     background-size: auto;
     min-height: 100vh;
 }
@@ -31,21 +29,21 @@ button:focus {
 }
 
 .logo {
-    max-width: 280px;
-    margin-top: 35px;
-    margin-bottom: 40px;
+    max-width: 270px;
+    margin-top: 25px;
+    margin-bottom: 25px;
 }
 
 .page-wrapper {
     max-width: 700px;
-    min-height: 390px;
+    min-height: 360px;
     margin: 0 auto;
-    padding: 40px 20px 10px 20px;
+    padding: 30px 10px 00px 10px;
     position: relative;
     overflow-wrap: break-word;
     background-color: white;
     border-radius: 30px;
-    border: 1px solid #eeeeef;
+    /*border: 1px solid #ddd;*/
     /*-webkit-box-shadow: 2px 2px 22px -4px rgba(199,208,224,1);*/
     /*-moz-box-shadow: 2px 2px 22px -4px rgba(199,208,224,1);*/
     /*box-shadow: 2px 2px 22px -4px rgba(199,208,224,1);*/
@@ -55,11 +53,11 @@ button:focus {
     text-align: center;
     background-color: #eee;
     border-radius: 100px;
-    max-width: 320px;
+    max-width: 260px;
     margin: 0 auto;
-    -webkit-box-shadow: inset 0px 0px 13px 0px rgba(230,230,230,1);
-    -moz-box-shadow: inset 0px 0px 13px 0px rgba(230,230,230,1);
-    box-shadow: inset 0px 0px 13px 0px rgba(230,230,230,1);
+    -webkit-box-shadow: inset 0px 0px 13px 0px rgba(230, 230, 230, 1);
+    -moz-box-shadow: inset 0px 0px 13px 0px rgba(230, 230, 230, 1);
+    box-shadow: inset 0px 0px 13px 0px rgba(230, 230, 230, 1);
 }
 
 
@@ -69,7 +67,7 @@ button:focus {
     margin: 0;
     width: 50%;
     padding: 10px;
-    font-size: 19px;
+    font-size: 18px;
     font-weight: bolder;
     color: #606263;
     border-radius: 100px;
@@ -90,9 +88,7 @@ button:focus {
 }
 
 .content-wrapper {
-    /*border: 2px solid var(--main-yellow);*/
-    padding: 30px 10px 20px 10px;
-    background-color: white;
+    padding: 20px 10px 5px 10px;
 }
 
 
@@ -125,9 +121,9 @@ button:focus {
     font-size: 17px;
     color: inherit;
     background-color: #f8f8f9;
-    -webkit-box-shadow: inset 0px 0px 12px 0px rgba(230,230,230,0.59);
-    -moz-box-shadow: inset 0px 0px 12px 0px rgba(230,230,230,0.59);
-    box-shadow: inset 0px 0px 12px 0px rgba(230,230,230,0.59);
+    -webkit-box-shadow: inset 0px 0px 12px 0px rgba(230, 230, 230, 0.59);
+    -moz-box-shadow: inset 0px 0px 12px 0px rgba(230, 230, 230, 0.59);
+    box-shadow: inset 0px 0px 12px 0px rgba(230, 230, 230, 0.59);
 }
 
 .withdraw-button {
@@ -158,7 +154,7 @@ button:focus {
     margin-top: 15px;
     font-weight: 400;
     color: #888889;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     font-size: 19px;
 }
 
@@ -178,23 +174,29 @@ button:focus {
 
 .deposit-info-div {
     width: 90%;
-    max-width: 600px;
+    max-width: 610px;
     text-align: left;
     margin: 0 auto;
 }
 
 .deposit-info-div h3 {
-    margin-top: 40px;
-    /*text-align: center;*/
+    margin-top: 0px;
     margin-bottom: 40px;
-    /*color: #f35c21;*/
-    padding-top: 30px;
-    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    font-size: 20px;
+    text-align: center
 }
 
+.deposit-info-div p {
+    padding-top: 20px;
+    border-top: 2px solid #ccc;
+    margin-top: 25px;
+}
+
+
 .remember-info {
-    padding: 15px;
-    background-color: #f2f2f3;
+    padding: 11px;
+    background-color: #eeeeef;
     /*border: 1px solid #e1e1e2;*/
     border-radius: 5px;
     font-size: 17px;
@@ -205,7 +207,7 @@ button:focus {
 
 .deposit-headline {
     margin-bottom: 0px;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 /*** CUSTOM RADIO BUTTON ***/
@@ -215,8 +217,8 @@ button:focus {
     position: relative;
     padding-left: 35px;
     margin-bottom: 12px;
-    cursor: pointer;
-    font-size: 20px;
+    /*cursor: pointer;*/
+    font-size: 19px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -251,8 +253,8 @@ button:focus {
     position: absolute;
     top: 0;
     left: 0;
-    height: 25px;
-    width: 25px;
+    height: 23px;
+    width: 23px;
     background-color: #eee;
     border-radius: 50%;
     border: 1px solid #ccc;
@@ -284,11 +286,29 @@ button:focus {
 
 /* Style the indicator (dot/circle) */
 .container .checkmark:after {
-    top: 7px;
-    left: 7px;
+    top: 6px;
+    left: 6px;
     width: 11px;
     height: 11px;
     border-radius: 50%;
     background: #c92e00;
 }
+
+.container input ~ .checkmark {
+    cursor: pointer;
+}
+
+/* do not allow to click on disabled radio buttons */
+.container input:disabled ~ .checkmark {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.container:hover input:disabled ~ .checkmark {
+    background-color: #cccccc66;
+}
+
+
+
+
 

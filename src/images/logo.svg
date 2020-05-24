@@ -11,9 +11,9 @@
    inkscape:version="1.0 (6e3e5246a0, 2020-05-07)"
    id="svg1026"
    version="1.1"
-   viewBox="0 0 86.93908 19.079147"
-   height="0.75114751in"
-   width="3.4227984in">
+   viewBox="0 0 64.834682 17.433391"
+   height="0.68635398in"
+   width="2.5525465in">
   <defs
      id="defs1020" />
   <sodipodi:namedview
@@ -31,9 +31,9 @@
      inkscape:document-rotation="0"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="35.005451"
-     inkscape:cx="107.19841"
-     inkscape:zoom="2.8"
+     inkscape:cy="58.797729"
+     inkscape:cx="158.54287"
+     inkscape:zoom="3.959798"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -54,12 +54,12 @@
     </rdf:RDF>
   </metadata>
   <g
-     transform="translate(166.16425,-55.602213)"
+     transform="translate(162.91691,-56.425091)"
      id="layer1"
      inkscape:groupmode="layer"
      inkscape:label="Layer 1">
     <g
-       transform="matrix(0.90073565,0,0,0.90073565,-14.588891,6.4662573)"
+       transform="matrix(0.82303869,0,0,0.82303869,-24.416358,11.527576)"
        id="g920">
       <path
          id="path1152"
@@ -74,25 +74,25 @@
     </g>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:10.4442px;line-height:1.25;font-family:sans-serif;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.261107"
-       x="-143.55879"
-       y="66.343552"
+       style="font-style:normal;font-weight:normal;font-size:8.4788px;line-height:1.25;font-family:sans-serif;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.211972"
+       x="-143.5233"
+       y="66.818031"
        id="text1160"><tspan
          sodipodi:role="line"
          id="tspan1158"
-         x="-143.55879"
-         y="66.343552"
-         style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Bold Italic';fill:#4d4d4d;fill-opacity:1;stroke-width:0.261107">btcTornado</tspan></text>
+         x="-143.5233"
+         y="66.818031"
+         style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Bold Italic';fill:#4d4d4d;fill-opacity:1;stroke-width:0.211972">btcTornado</tspan></text>
     <text
        id="text910"
-       y="71.519005"
-       x="-143.56337"
-       style="font-style:italic;font-variant:normal;font-weight:600;font-stretch:normal;font-size:3.56757px;line-height:1.25;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Semi-Bold Italic';fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.255007"
+       y="71.492294"
+       x="-143.55838"
+       style="font-style:italic;font-variant:normal;font-weight:600;font-stretch:normal;font-size:3.35058px;line-height:1.25;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Semi-Bold Italic';fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.239498"
        xml:space="preserve"><tspan
-         style="font-style:italic;font-variant:normal;font-weight:600;font-stretch:normal;font-size:3.56757px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Semi-Bold Italic';fill:#4d4d4d;fill-opacity:1;stroke-width:0.255007"
-         y="71.519005"
-         x="-143.56337"
+         style="font-style:italic;font-variant:normal;font-weight:600;font-stretch:normal;font-size:3.35058px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans Semi-Bold Italic';fill:#4d4d4d;fill-opacity:1;stroke-width:0.239498"
+         y="71.492294"
+         x="-143.55838"
          id="tspan908"
-         sodipodi:role="line">bitcoin mixer using Ethereum blockhain</tspan></text>
+         sodipodi:role="line">bitcoin mixer using Ethereum </tspan></text>
   </g>
 </svg>

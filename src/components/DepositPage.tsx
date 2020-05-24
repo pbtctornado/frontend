@@ -4,7 +4,9 @@ import {
     NETWORK,
     PAYMASTER_ADDRESS,
     PTOKEN_ADDRESS,
-    TORNADO_PBTC_INSTANCES_ADDRESSES
+    TORNADO_PBTC_INSTANCES_ADDRESSES,
+    AMOUNTS_DISABLED,
+    DEMO_PRIVATE_KEY
 } from '../config';
 import { pTokenABI } from '../contracts/pTokenABI';
 import { paymasterABI } from '../contracts/paymasterABI'
@@ -12,6 +14,7 @@ import { pBTC } from 'ptokens-pbtc';
 import { getNoteStringAndCommitment } from '../utils/snarks-functions';
 import { getAnonymitySetSize, sendTransactionsToServer } from '../utils/axios-functions';
 import Spinner from './Spinner';
+import { tornadoABI } from '../contracts/tornadoABI';
 
 const ethers = require('ethers');
 
@@ -68,11 +71,35 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
     };
 
     getDepositTransation = async (privateKey: string, address: string, commitment: string) => {
-        // TODO create and return deposit meta-transaction signed by privateKey
+
         const tornadoAddress =
             TORNADO_PBTC_INSTANCES_ADDRESSES[NETWORK][this.state.btcAmount];
 
-        return null
+        const tornadoContract = new this.props.web3.eth.Contract(
+            tornadoABI,
+            tornadoAddress
+        );
+
+        const web3 = this.props.web3;
+        // private key for demo purposes only
+        const senderPrivateKey = DEMO_PRIVATE_KEY;
+        const accountSender = web3.eth.accounts.privateKeyToAccount(senderPrivateKey);
+        const nonce = await web3.eth.getTransactionCount(accountSender.address);
+
+        const txData = await tornadoContract.methods.deposit(commitment).encodeABI();
+
+        // sing the transaction with user's private key
+        return await web3.eth.accounts.signTransaction(
+            {
+                nonce: nonce,
+                to: tornadoAddress,
+                value: 0,
+                data: txData,
+                gasPrice: web3.utils.toHex(await web3.eth.getGasPrice()),
+                gas: web3.utils.toHex(3000000),
+            },
+            '0x' + senderPrivateKey
+        )
     };
 
     getApproveTransaction = async (privateKey: string, addressFrom: string) => {
@@ -131,6 +158,18 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
         return fee
     }
 
+    sendRawTransaction = async (rawTransaction: string) => {
+        this.props.web3.eth
+            .sendSignedTransaction(rawTransaction)
+            .on('transactionHash', function (hash: string) {
+                console.log(['transferToStaging Trx Hash:' + hash]);
+            })
+            .on('receipt', function (receipt: any) {
+                console.log(['transferToStaging Receipt:', receipt]);
+            })
+            .on('error', console.error);
+    }
+
     // this function is executed when the user confirms his deposit amount of BTC
     showDepositInfoHandler = async () => {
         // TODO better error handling
@@ -151,28 +190,33 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
             const btcDepositAddress: string = await this.getBtcAddress(wallet.address);
             const paymasterFee = await this.getPaymasterFee();
 
-            // send transaction data to the server
-            const response = await sendTransactionsToServer(
-                wallet.address,
-                approveTx.rawTransaction,
-                'depositTx',
-                this.state.btcAmount * 10 ** 18);
+            // send deposit transaction (only in demo version)
+            // send signed raw transaction data
+            // console.log('Sending deposit transaction...')
+            // await this.sendRawTransaction(depositTx.rawTransaction);
 
+            // (commented in demo version)
+            // send transaction data to the server
+            // const response = await sendTransactionsToServer(
+            //     wallet.address,
+            //     approveTx.rawTransaction,
+            //     depositTx.rawTransaction,
+            //     this.state.btcAmount * 10 ** 18);
+
+            // (commented in demo version)
             // if the data was sent without an error, show deposit info to the user
-            if (response !== 'error') {
-                this.setState({
-                    paymasterFee,
-                    btcDepositAddress,
-                    wallet,
-                    noteString,
-                    loading: false,
-                    showDepositInfo: true,
-                }, () => {
-                    console.log('Success!')
-                });
-            } else {
-                this.setState({ loading: false });
-            }
+            // if (response !== 'error') {
+            this.setState({
+                paymasterFee,
+                btcDepositAddress,
+                wallet,
+                noteString,
+                loading: false,
+                showDepositInfo: true,
+            });
+            // } else {
+            //     this.setState({ loading: false });
+            // }
         } catch (error) {
             console.log('Error occured when generating deposit information.');
             console.error(error);
@@ -187,7 +231,6 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
     }
 
     render() {
-
         const amountOptions = (
             <ul className="deposit-amounts-ul">
                 {DEPOSIT_AMOUNTS.map((amount, index) => (
@@ -200,7 +243,7 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
                                 id={index.toString()}
                                 value={amount}
                                 onChange={() => this.setBtcAmountHandler(amount)}
-                                disabled={this.state.loading} // don't allow the user to change pBTC amount while the BTC address is being generated
+                                disabled={this.state.loading  || AMOUNTS_DISABLED.includes(amount)}  // don't allow the user to change pBTC amount while the BTC address is being generated
                             />
                             <span className="checkmark"></span>
                         </label>
@@ -223,19 +266,21 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
 
             depositInfo = (
                 <div className='deposit-info-div'>
-                    <h3>DEPOSIT INFORMATION:</h3>
+                    <h3>DEPOSIT INFORMATION</h3>
                     <div>
-                        <b>Send <span style={{color: '#f35c21'}}>{(btcAmount + paymasterFee).toFixed(4).toString()} BTC *</span> to this address:</b>
+                        <b>Send <span
+                            style={{ color: '#f35c21' }}>{(btcAmount + paymasterFee).toFixed(4).toString()} BTC *</span> to
+                            this address:</b>
                         <div className='remember-info'>{this.state.btcDepositAddress}</div>
                         <b>Your note to withdraw anonymized BTC:</b>
                         <div className='remember-info'>{this.state.noteString}</div>
                     </div>
                     <span className='fee-name'>* we charge {paymasterFee} BTC fee to pay for all the necessary transactions</span>
-                    {/*<h4>In case the transaction to tornado fails, this is the wallet where you receive non-anonymised BTC</h4>*/}
+                    <p><b>Save this mnemonic</b> to protect yourself against the case that some of the transactions fail.
+                    This mnemonic gives you access to non-anonymized pBTC tokens.</p>
                     {/*<b>Wallet address:</b> <br />*/}
                     {/*{address} <br /> <br />*/}
-                    {/*<b>Mnemonic phrase to access your wallet:</b>  <br />*/}
-                    {/*{mnemonic} <br /> <br />*/}
+                    <div className='remember-info'>{mnemonic}</div>
                 </div>
             );
         }

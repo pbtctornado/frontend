@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { RPC_URL, } from './config'
+import { RPC_URL } from './config'
 import WithdrawPage from './components/WithdrawPage';
 import DepositPage from './components/DepositPage';
 import logo from './images/logo.svg';
-
 import './styles/App.css';
+
 
 const Web3 = require('web3');
 
@@ -53,7 +53,7 @@ class App extends Component<{}, State> {
 
         if (this.state.pageSelected === 'withdraw') {
             withdrawButtonClasses = 'selected'
-            pageContent = <WithdrawPage />;
+            pageContent = <WithdrawPage web3={this.state.web3} />;
         } else {
             depositButtonClasses = 'selected'
             pageContent = <DepositPage
@@ -70,7 +70,7 @@ class App extends Component<{}, State> {
                         <button className={withdrawButtonClasses} onClick={this.switchToWithdraw}>Withdraw</button>
                     </div>
                     <div className='content-wrapper'>
-                    {pageContent}
+                        {pageContent}
                     </div>
                 </div>
             </div>
