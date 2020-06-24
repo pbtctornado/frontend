@@ -4,7 +4,8 @@ import WithdrawPage from './components/WithdrawPage';
 import DepositPage from './components/DepositPage';
 import logo from './images/logo.svg';
 import './styles/App.css';
-
+// @ts-ignore
+import Banner from 'react-js-banner';
 
 const Web3 = require('web3');
 
@@ -14,6 +15,7 @@ interface State {
     noteWithdraw: string;
     pageSelected: string;
     web3: any;
+    bannerCss: any;
 }
 
 // pass props and State interface to Component class
@@ -26,6 +28,7 @@ class App extends Component<{}, State> {
             noteWithdraw: '',
             pageSelected: 'deposit',
             web3: null,
+            bannerCss: { color: "#FFF", backgroundColor: "green" },
         };
     }
 
@@ -63,6 +66,7 @@ class App extends Component<{}, State> {
         }
         return (
             <div className="App">
+                <Banner title="Currently only on Ropsten" css={this.state.bannerCss}/>
                 <img src={logo} className="logo" alt="logo" />
                 <div className='page-wrapper'>
                     <div className='page-selector-div'>

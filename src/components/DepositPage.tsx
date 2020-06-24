@@ -275,8 +275,8 @@ class DepositPage extends Component<DepositPageProps, DepositPageState> {
                         <b>Your note to withdraw anonymized BTC:</b>
                         <div className='remember-info'>{this.state.noteString}</div>
                     </div>
-                    <span className='fee-name'>* we charge {paymasterFee} BTC fee to pay for all the necessary transactions</span>
-                    <p><b>Save this mnemonic</b> to protect yourself against the case that some of the transactions fail.
+                    <span className='fee-name'>* we charge {paymasterFee} BTC fee to pay for gas fees</span>
+                    <p><b>Save this mnemonic</b> to protect yourself against the transaction failure.
                     This mnemonic gives you access to non-anonymized pBTC tokens.</p>
                     {/*<b>Wallet address:</b> <br />*/}
                     {/*{address} <br /> <br />*/}
